@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">DubsmashMixer</string>
+    <string name="app_name">MediaMaster</string>
+    <string name="video_file">Video File</string>
+    <string name="range">Range</string>
 </resources>
