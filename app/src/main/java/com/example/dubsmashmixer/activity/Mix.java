@@ -10,11 +10,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.dubsmashmixer.R;
@@ -52,12 +55,17 @@ public class Mix extends AppCompatActivity {
     CrystalRangeSeekbar mixAudioRangeSeekBar;
     SeekBar mixAudioSeekBar;
     FloatingActionButton loadAudioFab;
+    ImageView mixVideoFirstScreenshotImageView;
+    ImageView mixVideoLastScreenshotImageView;
 
     //start button
     FloatingActionButton mixStartFab;
 
     //handler for updating seek bar
     Handler handler = new Handler();
+
+    //uri to video
+    Uri uri= Uri.EMPTY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +86,9 @@ public class Mix extends AppCompatActivity {
         mixVideoRangeSeekBar = findViewById(R.id.mix_video_range_seekBar);
         mixVideoSeekBar = findViewById(R.id.mix_video_seekBar);
         loadVideoFab = findViewById(R.id.load_video_fab);
+        mixVideoFirstScreenshotImageView = findViewById(R.id.mix_video_first_screenshot_imageView);
+        mixVideoLastScreenshotImageView = findViewById(R.id.mix_video_last_screenshot_imageView);
+
 
         //init audio card
         audioFileNameTextView = findViewById(R.id.audio_file_name_textView);
@@ -167,9 +178,14 @@ public class Mix extends AppCompatActivity {
                 }
                 Log.i(TAG, "min: " + leftValue);
                 Log.i(TAG, "max: " + rightValue);
-                //DecimalFormat df = new DecimalFormat("00.00");
+
                 mixVideoRangeStartTextView.setText(milliSecondsToTime((long) leftValue));
+                mixVideoFirstScreenshotImageView.setVisibility(View.VISIBLE);
+                Glide.with(getApplicationContext()).load(uri).into(mixVideoFirstScreenshotImageView);
+
                 mixVideoRangeFinishTextView.setText(milliSecondsToTime((long) rightValue));
+                mixVideoLastScreenshotImageView.setVisibility(View.VISIBLE);
+                Glide.with(getApplicationContext()).load(uri).into(mixVideoLastScreenshotImageView);
             }
 
             @Override
@@ -179,7 +195,8 @@ public class Mix extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
-
+                mixVideoFirstScreenshotImageView.setVisibility(View.GONE);
+                mixVideoLastScreenshotImageView.setVisibility(View.GONE);
             }
         });
     }
@@ -189,6 +206,7 @@ public class Mix extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == Constants.VIDEO_PICK_REQUEST_CODE) {
             try {
+                this.uri = data.getData();
                 mixVideoView.setVideoURI(data.getData());
             } catch (Exception e) {
                 Log.e(TAG, "onActivityResult: " + e);

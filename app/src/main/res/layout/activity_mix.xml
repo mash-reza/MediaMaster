@@ -55,6 +55,26 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/video_file_textView" />
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="90dp"
+                android:id="@+id/mix_video_first_screenshot_imageView"
+                app:layout_constraintStart_toStartOf="@+id/mix_videoView"
+                app:layout_constraintBottom_toBottomOf="@+id/mix_videoView"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginBottom="@dimen/medium_margin"
+                android:visibility="gone"
+                />
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/mix_video_last_screenshot_imageView"
+                android:layout_width="150dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:layout_marginBottom="@dimen/medium_margin"
+                app:layout_constraintBottom_toBottomOf="@+id/mix_videoView"
+                app:layout_constraintEnd_toEndOf="@+id/mix_videoView"/>
 
             <ImageButton
                 android:id="@+id/mix_video_play_imageButton"
