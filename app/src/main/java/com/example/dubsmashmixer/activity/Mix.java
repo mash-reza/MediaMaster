@@ -38,7 +38,7 @@ public class Mix extends AppCompatActivity {
     ImageButton mixVideoPauseImageButton;
     TextView mixVideoRangeStartTextView;
     TextView mixVideoRangeFinishTextView;
-    CrystalRangeSeekbar mixVideoRangeSeekBar;
+    RangeSeekBar mixVideoRangeSeekBar;
     SeekBar mixVideoSeekBar;
     FloatingActionButton loadVideoFab;
 
@@ -120,7 +120,7 @@ public class Mix extends AppCompatActivity {
                     mixVideoView.start();
                     mixVideoView.seekTo(mixVideoView.getCurrentPosition());
                 }
-                handler.postDelayed(runnable,0);
+                handler.postDelayed(runnable, 0);
             }
         });
         mixVideoPauseImageButton.setOnClickListener(v -> {
@@ -149,21 +149,38 @@ public class Mix extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
+        mixVideoRangeSeekBar.setOnRangeChangedListener(new OnRangeChangedListener() {
+            @Override
+            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
+                if (mixVideoView.getDuration() > 0) {
+                    mixVideoRangeSeekBar.setRange(0, mixVideoView.getDuration());
+                } else {
+                    mixVideoRangeSeekBar.setRange(0,100);
+                }
+                Log.i(TAG, "min: " + leftValue);
+                Log.i(TAG, "max: " + rightValue);
+                //DecimalFormat df = new DecimalFormat("00.00");
+                mixVideoRangeStartTextView.setText(milliSecondsToTime((long) leftValue));
+                mixVideoRangeFinishTextView.setText(milliSecondsToTime((long) rightValue));
+            }
 
-        mixVideoRangeSeekBar.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
-            mixVideoRangeSeekBar.setMinValue(0);
-            mixVideoRangeSeekBar.setMaxValue(mixVideoView.getDuration());
-            Log.i(TAG, "min: " + minValue);
-            Log.i(TAG, "max: " + maxValue);
-            //DecimalFormat df = new DecimalFormat("00.00");
-            mixVideoRangeStartTextView.setText(milliSecondsToTime(minValue.longValue()));
-            mixVideoRangeFinishTextView.setText(milliSecondsToTime(maxValue.longValue()));
+            @Override
+            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
+
+            }
         });
     }
 

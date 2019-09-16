@@ -99,16 +99,10 @@
                 android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/small_margin"/>
 
-            <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
-                app:bar_color="@color/colorPrimaryDark"
-                app:bar_highlight_color="@color/colorPrimary"
-                app:left_thumb_color="@color/colorPrimary"
-                app:left_thumb_color_pressed="@color/colorPrimaryDark"
-                app:right_thumb_color="@color/colorPrimary"
-                app:right_thumb_color_pressed="@color/colorPrimaryDark"
+            <com.jaygoo.widget.RangeSeekBar
                 android:id="@+id/mix_video_range_seekBar"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/small_margin"
                 app:layout_constraintBottom_toBottomOf="@+id/mix_video_range_start_textView"
