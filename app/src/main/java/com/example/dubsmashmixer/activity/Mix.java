@@ -39,11 +39,12 @@ public class Mix extends AppCompatActivity {
     ImageButton mixVideoPlayImageButton;
     ImageButton mixVideoStopImageButton;
     ImageButton mixVideoPauseImageButton;
-    TextView mixVideoRangeStartTextView;
-    TextView mixVideoRangeFinishTextView;
+    TextView mixRangeTimeTextView;
     RangeSeekBar mixVideoRangeSeekBar;
     SeekBar mixVideoSeekBar;
     FloatingActionButton loadVideoFab;
+    ImageView mixVideoViewRangeBackgroundImageView;
+    VideoView mixRangeVideoView;
 
     //audio card
     TextView audioFileNameTextView;
@@ -55,8 +56,6 @@ public class Mix extends AppCompatActivity {
     CrystalRangeSeekbar mixAudioRangeSeekBar;
     SeekBar mixAudioSeekBar;
     FloatingActionButton loadAudioFab;
-    ImageView mixVideoFirstScreenshotImageView;
-    ImageView mixVideoLastScreenshotImageView;
 
     //start button
     FloatingActionButton mixStartFab;
@@ -65,7 +64,7 @@ public class Mix extends AppCompatActivity {
     Handler handler = new Handler();
 
     //uri to video
-    Uri uri= Uri.EMPTY;
+    Uri uri = Uri.EMPTY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +80,12 @@ public class Mix extends AppCompatActivity {
         mixVideoPlayImageButton = findViewById(R.id.mix_video_play_imageButton);
         mixVideoStopImageButton = findViewById(R.id.mix_video_stop_imageButton);
         mixVideoPauseImageButton = findViewById(R.id.mix_video_pause_imageButton);
-        mixVideoRangeStartTextView = findViewById(R.id.mix_video_range_start_textView);
-        mixVideoRangeFinishTextView = findViewById(R.id.mix_video_range_finish_textView);
+        mixRangeTimeTextView = findViewById(R.id.mix_range_time_textView);
         mixVideoRangeSeekBar = findViewById(R.id.mix_video_range_seekBar);
         mixVideoSeekBar = findViewById(R.id.mix_video_seekBar);
         loadVideoFab = findViewById(R.id.load_video_fab);
-        mixVideoFirstScreenshotImageView = findViewById(R.id.mix_video_first_screenshot_imageView);
-        mixVideoLastScreenshotImageView = findViewById(R.id.mix_video_last_screenshot_imageView);
+        mixVideoViewRangeBackgroundImageView = findViewById(R.id.mix_videoView_range_background_imageView);
+        mixRangeVideoView = findViewById(R.id.mix_range_videoView);
 
 
         //init audio card
@@ -169,34 +167,49 @@ public class Mix extends AppCompatActivity {
         });
 
         mixVideoRangeSeekBar.setOnRangeChangedListener(new OnRangeChangedListener() {
+            boolean leftVal = false;
+
             @Override
             public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
                 if (mixVideoView.getDuration() > 0) {
                     mixVideoRangeSeekBar.setRange(0, mixVideoView.getDuration());
                 } else {
-                    mixVideoRangeSeekBar.setRange(0,100);
+                    mixVideoRangeSeekBar.setRange(0, 100);
                 }
-                Log.i(TAG, "min: " + leftValue);
-                Log.i(TAG, "max: " + rightValue);
 
-                mixVideoRangeStartTextView.setText(milliSecondsToTime((long) leftValue));
-                mixVideoFirstScreenshotImageView.setVisibility(View.VISIBLE);
-                Glide.with(getApplicationContext()).load(uri).into(mixVideoFirstScreenshotImageView);
+                if (leftVal == true) {
+                    mixVideoViewRangeBackgroundImageView.setVisibility(View.VISIBLE);
+                    mixRangeVideoView.setVisibility(View.VISIBLE);
+                    mixRangeTimeTextView.setVisibility(View.VISIBLE);
+                    mixRangeVideoView.seekTo((int) leftValue);
+                    mixRangeTimeTextView.setText(milliSecondsToTime((long) leftValue));
+                } else {
+                    mixVideoViewRangeBackgroundImageView.setVisibility(View.VISIBLE);
+                    mixRangeVideoView.setVisibility(View.VISIBLE);
+                    mixRangeTimeTextView.setVisibility(View.VISIBLE);
+                    mixRangeVideoView.seekTo((int) rightValue);
+                    mixRangeTimeTextView.setText(milliSecondsToTime((long) rightValue));
 
-                mixVideoRangeFinishTextView.setText(milliSecondsToTime((long) rightValue));
-                mixVideoLastScreenshotImageView.setVisibility(View.VISIBLE);
-                Glide.with(getApplicationContext()).load(uri).into(mixVideoLastScreenshotImageView);
+                }
             }
 
             @Override
             public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                if (isLeft){ leftVal = true;
+
+                    Log.i(TAG, "onStartTrackingTouch: " + leftVal);
+                }
+                else leftVal = false;
 
             }
 
             @Override
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                mixVideoFirstScreenshotImageView.setVisibility(View.GONE);
-                mixVideoLastScreenshotImageView.setVisibility(View.GONE);
+                //mixVideoFirstScreenshotImageView.setVisibility(View.GONE);
+                //mixVideoLastScreenshotImageView.setVisibility(View.GONE);
+                mixVideoViewRangeBackgroundImageView.setVisibility(View.GONE);
+                mixRangeVideoView.setVisibility(View.GONE);
+                mixRangeTimeTextView.setVisibility(View.GONE);
             }
         });
     }
@@ -208,6 +221,7 @@ public class Mix extends AppCompatActivity {
             try {
                 this.uri = data.getData();
                 mixVideoView.setVideoURI(data.getData());
+                mixRangeVideoView.setVideoURI(data.getData());
             } catch (Exception e) {
                 Log.e(TAG, "onActivityResult: " + e);
             }
