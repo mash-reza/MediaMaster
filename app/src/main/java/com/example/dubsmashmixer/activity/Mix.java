@@ -4,30 +4,27 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.bumptech.glide.Glide;
-import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
-import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
 
-import java.io.File;
-import java.text.DecimalFormat;
+import java.io.IOException;
 
 public class Mix extends AppCompatActivity {
     //log tag
@@ -51,9 +48,8 @@ public class Mix extends AppCompatActivity {
     ImageButton mixAudioPlayImageButton;
     ImageButton mixAudioStopImageButton;
     ImageButton mixAudioPauseImageButton;
-    TextView mixAudioRangeStartTextView;
-    TextView mixAudioRangeFinishTextView;
-    CrystalRangeSeekbar mixAudioRangeSeekBar;
+    Button mixAudioFromButton;
+    Button mixAudioToButton;
     SeekBar mixAudioSeekBar;
     FloatingActionButton loadAudioFab;
 
@@ -63,8 +59,11 @@ public class Mix extends AppCompatActivity {
     //handler for updating seek bar
     Handler handler = new Handler();
 
-    //uri to video
-    Uri uri = Uri.EMPTY;
+    //uri
+    Uri videoUri = Uri.EMPTY;
+    Uri audioUri = Uri.EMPTY;
+
+    MediaPlayer audioPlayer = new MediaPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,31 +85,77 @@ public class Mix extends AppCompatActivity {
         loadVideoFab = findViewById(R.id.load_video_fab);
         mixVideoViewRangeBackgroundImageView = findViewById(R.id.mix_videoView_range_background_imageView);
         mixRangeVideoView = findViewById(R.id.mix_range_videoView);
-
-
         //init audio card
         audioFileNameTextView = findViewById(R.id.audio_file_name_textView);
         mixAudioPlayImageButton = findViewById(R.id.mix_audio_play_imageButton);
         mixAudioStopImageButton = findViewById(R.id.mix_audio_stop_imageButton);
         mixAudioPauseImageButton = findViewById(R.id.mix_audio_pause_imageButton);
-        mixAudioRangeStartTextView = findViewById(R.id.mix_audio_range_start_textView);
-        mixAudioRangeFinishTextView = findViewById(R.id.mix_audio_range_finish_textView);
-        mixAudioRangeSeekBar = findViewById(R.id.mix_audio_range_seekBar);
+        mixAudioFromButton = findViewById(R.id.mix_audio_from_button);
+        mixAudioToButton = findViewById(R.id.mix_audio_to_button);
         mixAudioSeekBar = findViewById(R.id.mix_audio_seekBar);
         loadAudioFab = findViewById(R.id.load_audio_fab);
-
         //init stat button
         mixStartFab = findViewById(R.id.mix_start_fab);
 
-        //load video view
+        videoControl();
+        audioControl();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Constants.VIDEO_PICK_REQUEST_CODE:
+                    try {
+                        this.videoUri = data.getData();
+                        mixVideoView.setVideoURI(data.getData());
+                        mixRangeVideoView.setVideoURI(data.getData());
+                    } catch (Exception e) {
+                        Log.e(TAG, "onActivityResult: " + e);
+                    }
+                    break;
+                case Constants.AUDIO_PICK_REQUEST_CODE:
+                    this.audioUri = data.getData();
+                    try {
+                        audioPlayer.setDataSource(this, audioUri);
+                    } catch (IOException e) {
+                        Log.e(TAG, "onActivityResult: ", e);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private String milliSecondsToTime(long milliseconds) {
+        String finalTimerString = "";
+        String minuteString = "";
+        String secondsString;
+
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+        if (minutes < 10) {
+            minuteString = "0" + minutes;
+        } else {
+            minuteString = "" + minuteString;
+        }
+
+        finalTimerString = minuteString + ":" + secondsString;
+
+        return finalTimerString;
+    }
+
+    private void videoControl() {
         loadVideoFab.setOnClickListener(v -> {
             //load video view
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, Constants.VIDEO_PICK_REQUEST_CODE);
         });
-
-        // video view controlling
-
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -195,11 +240,11 @@ public class Mix extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                if (isLeft){ leftVal = true;
+                if (isLeft) {
+                    leftVal = true;
 
                     Log.i(TAG, "onStartTrackingTouch: " + leftVal);
-                }
-                else leftVal = false;
+                } else leftVal = false;
 
             }
 
@@ -214,49 +259,77 @@ public class Mix extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == Constants.VIDEO_PICK_REQUEST_CODE) {
-            try {
-                this.uri = data.getData();
-                mixVideoView.setVideoURI(data.getData());
-                mixRangeVideoView.setVideoURI(data.getData());
-            } catch (Exception e) {
-                Log.e(TAG, "onActivityResult: " + e);
+    private void audioControl() {
+        loadAudioFab.setOnClickListener(v -> {
+            //load audio
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, Constants.AUDIO_PICK_REQUEST_CODE);
+        });
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                mixAudioSeekBar.setMax(audioPlayer.getDuration());
+                mixAudioSeekBar.setProgress(audioPlayer.getCurrentPosition());
+                handler.postDelayed(this, 50);
             }
-        }
-    }
+        };
 
-    private String milliSecondsToTime(long milliseconds) {
-        String finalTimerString = "";
-        String minuteString = "";
-        String secondsString = "";
+        mixAudioPlayImageButton.setOnClickListener(v -> {
+            //handler.removeCallbacks(runnable);
+            if (!audioPlayer.isPlaying()) {
+                if (audioPlayer.getCurrentPosition() == 0) {
+                    try {
+                        audioPlayer.prepare();
+                    } catch (IOException e) {
+                        Log.e(TAG, "audioControl: ", e);
+                    }
+                    audioPlayer.seekTo(0);
+                    audioPlayer.start();
+                    handler.postDelayed(runnable, 0);
+                }else {
+                    audioPlayer.start();
+                    handler.postDelayed(runnable, 0);
+                }
+            }
+        });
+        mixAudioPauseImageButton.setOnClickListener(v -> {
+            if (audioPlayer.isPlaying()) {
+                audioPlayer.pause();
+                mixAudioSeekBar.setProgress(audioPlayer.getCurrentPosition());
+                handler.removeCallbacks(runnable);
+            }
+        });
+        mixAudioStopImageButton.setOnClickListener(v -> {
+            mixAudioSeekBar.setProgress(0);
+            audioPlayer.pause();
+            audioPlayer.seekTo(1);
+            handler.removeCallbacks(runnable);
+        });
+        mixAudioSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    audioPlayer.seekTo(progress);
+                }
+            }
 
-        // Convert total duration into time
-//            int hours = (int) (milliseconds / (1000 * 60 * 60));
-        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
-        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-        // Add hours if there
-//            if (hours > 0) {
-//                finalTimerString = hours + ":";
-//            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
-        // Prepending 0 to seconds if it is one digit
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        } else {
-            secondsString = "" + seconds;
-        }
-        if (minutes < 10) {
-            minuteString = "0" + minutes;
-        } else {
-            minuteString = "" + minuteString;
-        }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        finalTimerString = minuteString + ":" + secondsString;
+        mixAudioFromButton.setOnClickListener(v -> {
+           mixAudioFromButton.setText(milliSecondsToTime(audioPlayer.getCurrentPosition()));
+        });
 
-        // return timer string
-        return finalTimerString;
+        mixAudioToButton.setOnClickListener(v -> {
+            mixAudioToButton.setText(milliSecondsToTime(audioPlayer.getCurrentPosition()));
+        });
+
     }
 }
