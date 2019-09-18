@@ -4,10 +4,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.media.MediaCodec;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -20,11 +24,27 @@ import android.widget.VideoView;
 
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
+import com.example.dubsmashmixer.util.FFmpegHelper;
+import com.example.dubsmashmixer.util.Helper;
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.util.Date;
+import java.util.logging.FileHandler;
+
+import processing.ffmpeg.videokit.Command;
+import processing.ffmpeg.videokit.LogLevel;
+import processing.ffmpeg.videokit.VideoKit;
 
 public class Mix extends AppCompatActivity {
     //log tag
@@ -65,6 +85,8 @@ public class Mix extends AppCompatActivity {
 
     MediaPlayer audioPlayer = new MediaPlayer();
 
+    Bundle bundle = new Bundle();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +121,44 @@ public class Mix extends AppCompatActivity {
 
         videoControl();
         audioControl();
+        mixStartFab.setOnClickListener(v -> {
+            File videoFile = new File(Helper.getRealPathFromURI(videoUri,getApplicationContext()));
+            File audioFile = new File(Helper.getRealPathFromURI(audioUri,getApplicationContext()));
+            bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH,videoFile.getAbsolutePath());
+            bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH,audioFile.getAbsolutePath());
+            bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH,
+                    Environment.getExternalStorageDirectory().getAbsolutePath()+"/Movies/out"+new Date().getTime()+".mp4");
+            try {
+                FFmpeg.getInstance(this).execute(Helper.cmdBuilder(bundle),new FFmpegExecuteResponseHandler() {
+                    @Override
+                    public void onSuccess(String message) {
+                        Log.i(TAG, "onSuccess: execute");
+                    }
+
+                    @Override
+                    public void onProgress(String message) {
+                        Log.i(TAG, "onProgress: execute");
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Log.i(TAG, "onFailure: execute");
+                    }
+
+                    @Override
+                    public void onStart() {
+                        Log.i(TAG, "onStart: execute");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        Log.i(TAG, "onFinish: execute");
+                    }
+                });
+            } catch (FFmpegCommandAlreadyRunningException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -127,28 +187,6 @@ public class Mix extends AppCompatActivity {
         }
     }
 
-    private String milliSecondsToTime(long milliseconds) {
-        String finalTimerString = "";
-        String minuteString = "";
-        String secondsString;
-
-        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
-        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        } else {
-            secondsString = "" + seconds;
-        }
-        if (minutes < 10) {
-            minuteString = "0" + minutes;
-        } else {
-            minuteString = "" + minuteString;
-        }
-
-        finalTimerString = minuteString + ":" + secondsString;
-
-        return finalTimerString;
-    }
 
     private void videoControl() {
         loadVideoFab.setOnClickListener(v -> {
@@ -227,14 +265,17 @@ public class Mix extends AppCompatActivity {
                     mixRangeVideoView.setVisibility(View.VISIBLE);
                     mixRangeTimeTextView.setVisibility(View.VISIBLE);
                     mixRangeVideoView.seekTo((int) leftValue);
-                    mixRangeTimeTextView.setText(milliSecondsToTime((long) leftValue));
+                    String start = Helper.milliSecondsToTime((long) leftValue);
+                    mixRangeTimeTextView.setText(start);
+                    bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY,start);
                 } else {
                     mixVideoViewRangeBackgroundImageView.setVisibility(View.VISIBLE);
                     mixRangeVideoView.setVisibility(View.VISIBLE);
                     mixRangeTimeTextView.setVisibility(View.VISIBLE);
                     mixRangeVideoView.seekTo((int) rightValue);
-                    mixRangeTimeTextView.setText(milliSecondsToTime((long) rightValue));
-
+                    String finish = Helper.milliSecondsToTime((long) rightValue);
+                    mixRangeTimeTextView.setText(finish);
+                    bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY,finish);
                 }
             }
 
@@ -287,7 +328,7 @@ public class Mix extends AppCompatActivity {
                     audioPlayer.seekTo(0);
                     audioPlayer.start();
                     handler.postDelayed(runnable, 0);
-                }else {
+                } else {
                     audioPlayer.start();
                     handler.postDelayed(runnable, 0);
                 }
@@ -324,12 +365,17 @@ public class Mix extends AppCompatActivity {
         });
 
         mixAudioFromButton.setOnClickListener(v -> {
-           mixAudioFromButton.setText(milliSecondsToTime(audioPlayer.getCurrentPosition()));
+            String start = Helper.milliSecondsToTime(audioPlayer.getCurrentPosition());
+            mixAudioFromButton.setText(start);
+            bundle.putString(Constants.MIX_BUNDLE_AUDIO_START_KEY,start);
         });
 
         mixAudioToButton.setOnClickListener(v -> {
-            mixAudioToButton.setText(milliSecondsToTime(audioPlayer.getCurrentPosition()));
+            String finish= Helper.milliSecondsToTime(audioPlayer.getCurrentPosition());
+            mixAudioToButton.setText(finish);
+            bundle.putString(Constants.MIX_BUNDLE_AUDIO_FINSIH_KEY,finish);
         });
 
     }
+
 }
