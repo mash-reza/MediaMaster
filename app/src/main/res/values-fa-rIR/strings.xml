@@ -3,6 +3,10 @@
     <string name="app_name">مدیریت چندرسانه ای</string>
     <string name="video_file">فایل ویدیو</string>
     <string name="range">محدوده</string>
-
+    <string name="onstart_mix">عملیات شروع شد. لطفا منتظر بمانید!</string>
+    <string name="onsuccess_mix">عملیات با موفقیت انجام شد!</string>
+    <string name="onfailure_mix">خطا. مشکلی پیش آمده است!</string>
+    <string name="from">از</string>
+    <string name="to">تا</string>
 
 </resources>

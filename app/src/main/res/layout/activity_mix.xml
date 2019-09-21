@@ -284,9 +284,9 @@
                 android:id="@+id/mix_audio_from_button"
                 android:layout_width="80dp"
                 android:layout_height="35dp"
-                android:layout_marginStart="80dp"
+                android:layout_marginStart="@dimen/super_margin"
                 android:background="@color/colorPrimary"
-                android:text="-- : --"
+                android:text="@string/from"
                 app:layout_constraintBottom_toBottomOf="@+id/mix_audio_range_textView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/mix_audio_range_textView" />
@@ -295,9 +295,9 @@
                 android:id="@+id/mix_audio_to_button"
                 android:layout_width="80dp"
                 android:layout_height="35dp"
-                android:layout_marginEnd="80dp"
+                android:layout_marginEnd="@dimen/super_margin"
                 android:background="@color/colorPrimary"
-                android:text="-- : --"
+                android:text="@string/to"
                 app:layout_constraintBottom_toBottomOf="@+id/mix_audio_range_textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/mix_audio_range_textView" />

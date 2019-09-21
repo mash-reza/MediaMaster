@@ -2,4 +2,9 @@
     <string name="app_name">MediaMaster</string>
     <string name="video_file">Video File</string>
     <string name="range">Range</string>
+    <string name="onstart_mix">Process is started. Please wait!</string>
+    <string name="onsuccess_mix">Successfully finished!</string>
+    <string name="onfailure_mix">Error. there is something wrong!</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 </resources>

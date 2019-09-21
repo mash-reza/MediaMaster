@@ -2,7 +2,10 @@ package com.example.dubsmashmixer.util;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.example.dubsmashmixer.R;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
@@ -11,40 +14,27 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedExceptio
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class FFmpegHelper {
+public class FFmpegHelper{
     private static final String TAG = "FFmpegHelper";
     private Context context;
-    private FFmpeg ffmpeg;
 
-    public FFmpegHelper(Context context) {
+    private FFmpegHelper(Context context) {
         this.context = context;
-    }
-
-    public void loadFFMpegBinary() {
-        ffmpeg =FFmpeg.getInstance(context);
-        try {
-            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
-                @Override
-                public void onFailure() {
-                    Log.e(TAG, "onFailure: failed to load binary");
-                }
-            });
-        } catch (FFmpegNotSupportedException e) {
-            Log.e(TAG, "loadFFMpegBinary: ", e);
-        }
     }
 
     public void execFFmpegBinary(final String[] command) {
         try {
-            ffmpeg.execute(command, new ExecuteBinaryResponseHandler() {
+            FFmpeg.getInstance(context).execute(command, new ExecuteBinaryResponseHandler() {
                 @Override
                 public void onFailure(String s) {
                     Log.e(TAG, "onFailure: execute " + s);
+                    Toast.makeText(context,context.getResources().getString(R.string.onfailure_mix), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onSuccess(String s) {
                     Log.e(TAG, "onSuccess: execute " + s);
+                    Toast.makeText(context,context.getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -55,6 +45,7 @@ public class FFmpegHelper {
                 @Override
                 public void onStart() {
                     Log.d(TAG, "onStart: execute " + command);
+                    Toast.makeText(context,context.getResources().getString(R.string.onstart_mix), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -65,11 +56,5 @@ public class FFmpegHelper {
         } catch (FFmpegCommandAlreadyRunningException e) {
             // do nothing for now
         }
-    }
-
-    public void commandBuilder(String input,String output,
-                               String videoStartTime,String videoFinishTime,
-                               String audioStartTime,String audioFinishTime){
-
     }
 }
