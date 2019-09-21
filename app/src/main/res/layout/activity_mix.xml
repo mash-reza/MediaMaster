@@ -4,8 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.Mix">
-
+    tools:context=".activity.Mix"
+    >
+    <ProgressBar
+        android:id="@+id/mix_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="?android:attr/progressBarStyleLarge"
+        android:indeterminate="false"
+        />
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mix_layout"
+    >
     <androidx.cardview.widget.CardView
 
         android:id="@+id/mix_video_cardView"
@@ -317,6 +333,15 @@
         app:layout_constraintEnd_toEndOf="@+id/mix_audio_cardView"
         app:layout_constraintStart_toStartOf="@+id/mix_audio_cardView"
         app:layout_constraintTop_toBottomOf="@+id/mix_audio_cardView" />
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:src="@android:color/black"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--/>-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/mix_start_fab"
@@ -328,5 +353,7 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="onStartClick"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,10 @@ package com.example.dubsmashmixer.activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.solver.widgets.ConstraintTableLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaCodec;
@@ -18,8 +21,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.example.dubsmashmixer.R;
@@ -38,14 +43,7 @@ import com.jaygoo.widget.RangeSeekBar;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
-import java.util.logging.FileHandler;
-
-import processing.ffmpeg.videokit.Command;
-import processing.ffmpeg.videokit.LogLevel;
-import processing.ffmpeg.videokit.VideoKit;
-
 public class Mix extends AppCompatActivity {
     //log tag
     private static final String TAG = "Mix";
@@ -75,6 +73,11 @@ public class Mix extends AppCompatActivity {
 
     //start button
     FloatingActionButton mixStartFab;
+
+    //proggress
+    ProgressBar progressBar;
+    //root
+    ConstraintLayout layout;
 
     //handler for updating seek bar
     Handler handler = new Handler();
@@ -118,47 +121,13 @@ public class Mix extends AppCompatActivity {
         loadAudioFab = findViewById(R.id.load_audio_fab);
         //init stat button
         mixStartFab = findViewById(R.id.mix_start_fab);
+        //progress
+        progressBar = findViewById(R.id.mix_progressbar);
+        //layout
+        layout = findViewById(R.id.mix_layout);
 
         videoControl();
         audioControl();
-        mixStartFab.setOnClickListener(v -> {
-            File videoFile = new File(Helper.getRealPathFromURI(videoUri,getApplicationContext()));
-            File audioFile = new File(Helper.getRealPathFromURI(audioUri,getApplicationContext()));
-            bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH,videoFile.getAbsolutePath());
-            bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH,audioFile.getAbsolutePath());
-            bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH,
-                    Environment.getExternalStorageDirectory().getAbsolutePath()+"/Movies/out"+new Date().getTime()+".mp4");
-            try {
-                FFmpeg.getInstance(this).execute(Helper.cmdBuilder(bundle),new FFmpegExecuteResponseHandler() {
-                    @Override
-                    public void onSuccess(String message) {
-                        Log.i(TAG, "onSuccess: execute");
-                    }
-
-                    @Override
-                    public void onProgress(String message) {
-                        Log.i(TAG, "onProgress: execute");
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        Log.i(TAG, "onFailure: execute");
-                    }
-
-                    @Override
-                    public void onStart() {
-                        Log.i(TAG, "onStart: execute");
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        Log.i(TAG, "onFinish: execute");
-                    }
-                });
-            } catch (FFmpegCommandAlreadyRunningException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     @Override
@@ -378,4 +347,61 @@ public class Mix extends AppCompatActivity {
 
     }
 
+    public void onStartClick(View v){
+
+        File videoFile = new File(Helper.getRealPathFromURI(videoUri,getApplicationContext()));
+        File audioFile = new File(Helper.getRealPathFromURI(audioUri,getApplicationContext()));
+        bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH,videoFile.getAbsolutePath());
+        bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH,audioFile.getAbsolutePath());
+        bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH,
+                Environment.getExternalStorageDirectory().getAbsolutePath()+"/Movies/out"+new Date().getTime()+".mp4");
+//            FFmpegHelper helper = new FFmpegHelper(this);
+//            helper.execute(Helper.cmdBuilder(bundle));
+        String[] cmd = Helper.cmdBuilder(bundle);
+        try {
+            FFmpeg.getInstance(this).execute(cmd,onExecuteBinaryResponseHandler());
+        } catch (FFmpegCommandAlreadyRunningException e) {
+            // do nothing for now
+        }
+    }
+
+    private ExecuteBinaryResponseHandler onExecuteBinaryResponseHandler(){
+        return new ExecuteBinaryResponseHandler(){
+            //@SuppressLint("RestrictedApi")
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onStart() {
+                super.onStart();
+                progressBar.setVisibility(View.VISIBLE);
+                mixStartFab.setVisibility(View.INVISIBLE);
+                layout.setAlpha(.3f);
+            }
+            @Override
+            public void onProgress(String message) {
+                super.onProgress(message);
+            }
+            @SuppressLint("RestrictedApi")
+            @Override
+            //@SuppressLint("RestrictedApi")
+            public void onSuccess(String message) {
+                super.onSuccess(message);
+                progressBar.setVisibility(View.GONE);
+                mixStartFab.setVisibility(View.VISIBLE);
+                layout.setAlpha(1);
+                Toast.makeText(getApplicationContext(),getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
+
+            }
+            @SuppressLint("RestrictedApi")
+            @Override
+            //@SuppressLint("RestrictedApi")
+            public void onFailure(String message) {
+                super.onFailure(message);
+                progressBar.setVisibility(View.GONE);
+                mixStartFab.setVisibility(View.VISIBLE);
+                layout.setAlpha(1);
+                Toast.makeText(getApplicationContext(),getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
+
+            }
+        };
+    }
 }

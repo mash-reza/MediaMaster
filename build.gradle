@@ -21,7 +21,7 @@ allprojects {
         maven {
             url 'https://jitpack.io'
         }
-        maven { url 'https://maven.infullmobile.com/public' }
+        //maven { url 'https://maven.infullmobile.com/public' }
     }
 }
 
