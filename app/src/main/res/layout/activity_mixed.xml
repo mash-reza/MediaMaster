@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.Mixed">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/mixed_player_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@android:color/black"/>
+    <ImageButton
+        android:onClick="onMixDeleteButtonClick"
+        android:id="@+id/mixed_delete_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/delete_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/small_margin"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

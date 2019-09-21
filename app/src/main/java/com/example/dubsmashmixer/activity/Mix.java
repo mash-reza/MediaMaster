@@ -2,19 +2,14 @@ package com.example.dubsmashmixer.activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.solver.widgets.ConstraintTableLayout;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.database.Cursor;
-import android.media.MediaCodec;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -29,14 +24,10 @@ import android.widget.VideoView;
 
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
-import com.example.dubsmashmixer.util.FFmpegHelper;
 import com.example.dubsmashmixer.util.Helper;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
@@ -44,6 +35,7 @@ import com.jaygoo.widget.RangeSeekBar;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+
 public class Mix extends AppCompatActivity {
     //log tag
     private static final String TAG = "Mix";
@@ -63,9 +55,8 @@ public class Mix extends AppCompatActivity {
 
     //audio card
     TextView audioFileNameTextView;
-    ImageButton mixAudioPlayImageButton;
+    ImageButton mixAudioPlayPauseImageButton;
     ImageButton mixAudioStopImageButton;
-    ImageButton mixAudioPauseImageButton;
     Button mixAudioFromButton;
     Button mixAudioToButton;
     SeekBar mixAudioSeekBar;
@@ -78,13 +69,13 @@ public class Mix extends AppCompatActivity {
     ProgressBar progressBar;
     //root
     ConstraintLayout layout;
-
     //handler for updating seek bar
     Handler handler = new Handler();
 
     //uri
     Uri videoUri = Uri.EMPTY;
     Uri audioUri = Uri.EMPTY;
+    Uri outputUri = Uri.EMPTY;
 
     MediaPlayer audioPlayer = new MediaPlayer();
 
@@ -112,9 +103,8 @@ public class Mix extends AppCompatActivity {
         mixRangeVideoView = findViewById(R.id.mix_range_videoView);
         //init audio card
         audioFileNameTextView = findViewById(R.id.audio_file_name_textView);
-        mixAudioPlayImageButton = findViewById(R.id.mix_audio_play_imageButton);
+        mixAudioPlayPauseImageButton = findViewById(R.id.mix_audio_play_imageButton);
         mixAudioStopImageButton = findViewById(R.id.mix_audio_stop_imageButton);
-        mixAudioPauseImageButton = findViewById(R.id.mix_audio_pause_imageButton);
         mixAudioFromButton = findViewById(R.id.mix_audio_from_button);
         mixAudioToButton = findViewById(R.id.mix_audio_to_button);
         mixAudioSeekBar = findViewById(R.id.mix_audio_seekBar);
@@ -125,7 +115,11 @@ public class Mix extends AppCompatActivity {
         progressBar = findViewById(R.id.mix_progressbar);
         //layout
         layout = findViewById(R.id.mix_layout);
+    }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
         videoControl();
         audioControl();
     }
@@ -236,7 +230,7 @@ public class Mix extends AppCompatActivity {
                     mixRangeVideoView.seekTo((int) leftValue);
                     String start = Helper.milliSecondsToTime((long) leftValue);
                     mixRangeTimeTextView.setText(start);
-                    bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY,start);
+                    bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY, start);
                 } else {
                     mixVideoViewRangeBackgroundImageView.setVisibility(View.VISIBLE);
                     mixRangeVideoView.setVisibility(View.VISIBLE);
@@ -244,7 +238,7 @@ public class Mix extends AppCompatActivity {
                     mixRangeVideoView.seekTo((int) rightValue);
                     String finish = Helper.milliSecondsToTime((long) rightValue);
                     mixRangeTimeTextView.setText(finish);
-                    bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY,finish);
+                    bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, finish);
                 }
             }
 
@@ -285,7 +279,7 @@ public class Mix extends AppCompatActivity {
             }
         };
 
-        mixAudioPlayImageButton.setOnClickListener(v -> {
+        mixAudioPlayPauseImageButton.setOnClickListener(v -> {
             //handler.removeCallbacks(runnable);
             if (!audioPlayer.isPlaying()) {
                 if (audioPlayer.getCurrentPosition() == 0) {
@@ -297,19 +291,20 @@ public class Mix extends AppCompatActivity {
                     audioPlayer.seekTo(0);
                     audioPlayer.start();
                     handler.postDelayed(runnable, 0);
+                    mixAudioPlayPauseImageButton.setImageResource(R.drawable.pause_icon);
                 } else {
                     audioPlayer.start();
                     handler.postDelayed(runnable, 0);
+                    mixAudioPlayPauseImageButton.setImageResource(R.drawable.pause_icon);
                 }
-            }
-        });
-        mixAudioPauseImageButton.setOnClickListener(v -> {
-            if (audioPlayer.isPlaying()) {
+            }else {
                 audioPlayer.pause();
                 mixAudioSeekBar.setProgress(audioPlayer.getCurrentPosition());
                 handler.removeCallbacks(runnable);
+                mixAudioPlayPauseImageButton.setImageResource(R.drawable.play_icon);
             }
         });
+
         mixAudioStopImageButton.setOnClickListener(v -> {
             mixAudioSeekBar.setProgress(0);
             audioPlayer.pause();
@@ -336,50 +331,55 @@ public class Mix extends AppCompatActivity {
         mixAudioFromButton.setOnClickListener(v -> {
             String start = Helper.milliSecondsToTime(audioPlayer.getCurrentPosition());
             mixAudioFromButton.setText(start);
-            bundle.putString(Constants.MIX_BUNDLE_AUDIO_START_KEY,start);
+            bundle.putString(Constants.MIX_BUNDLE_AUDIO_START_KEY, start);
         });
 
         mixAudioToButton.setOnClickListener(v -> {
-            String finish= Helper.milliSecondsToTime(audioPlayer.getCurrentPosition());
+            String finish = Helper.milliSecondsToTime(audioPlayer.getCurrentPosition());
             mixAudioToButton.setText(finish);
-            bundle.putString(Constants.MIX_BUNDLE_AUDIO_FINSIH_KEY,finish);
+            bundle.putString(Constants.MIX_BUNDLE_AUDIO_FINSIH_KEY, finish);
         });
 
     }
 
-    public void onStartClick(View v){
+    public void onStartClick(View v) {
 
-        File videoFile = new File(Helper.getRealPathFromURI(videoUri,getApplicationContext()));
-        File audioFile = new File(Helper.getRealPathFromURI(audioUri,getApplicationContext()));
-        bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH,videoFile.getAbsolutePath());
-        bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH,audioFile.getAbsolutePath());
-        bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH,
-                Environment.getExternalStorageDirectory().getAbsolutePath()+"/Movies/out"+new Date().getTime()+".mp4");
-//            FFmpegHelper helper = new FFmpegHelper(this);
-//            helper.execute(Helper.cmdBuilder(bundle));
+        File videoFile = new File(Helper.getRealPathFromURI(videoUri, getApplicationContext()));
+        File audioFile = new File(Helper.getRealPathFromURI(audioUri, getApplicationContext()));
+        bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH, videoFile.getAbsolutePath());
+        bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH, audioFile.getAbsolutePath());
+        File outPutFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster");
+        outPutFolder.mkdirs();
+        String outPutFile = outPutFolder.getAbsolutePath() + "/out" + new Date().getTime() + ".mp4";
+        outputUri = Uri.parse(outPutFile);
+        bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH,outPutFile);
         String[] cmd = Helper.cmdBuilder(bundle);
         try {
-            FFmpeg.getInstance(this).execute(cmd,onExecuteBinaryResponseHandler());
+            FFmpeg.getInstance(this).execute(cmd, onExecuteBinaryResponseHandler());
         } catch (FFmpegCommandAlreadyRunningException e) {
             // do nothing for now
         }
     }
 
-    private ExecuteBinaryResponseHandler onExecuteBinaryResponseHandler(){
-        return new ExecuteBinaryResponseHandler(){
+    private ExecuteBinaryResponseHandler onExecuteBinaryResponseHandler() {
+        return new ExecuteBinaryResponseHandler() {
             //@SuppressLint("RestrictedApi")
-            @SuppressLint("RestrictedApi")
+            @SuppressLint({"RestrictedApi", "ClickableViewAccessibility"})
             @Override
             public void onStart() {
                 super.onStart();
                 progressBar.setVisibility(View.VISIBLE);
                 mixStartFab.setVisibility(View.INVISIBLE);
                 layout.setAlpha(.3f);
+//                mixAudioPlayPauseImageButton.setClickable(false);
+                disableClickable();
             }
+
             @Override
             public void onProgress(String message) {
                 super.onProgress(message);
             }
+
             @SuppressLint("RestrictedApi")
             @Override
             //@SuppressLint("RestrictedApi")
@@ -388,9 +388,12 @@ public class Mix extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 mixStartFab.setVisibility(View.VISIBLE);
                 layout.setAlpha(1);
-                Toast.makeText(getApplicationContext(),getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
-
+                Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(),Mixed.class);
+                intent.setData(outputUri);
+                startActivity(intent);
             }
+
             @SuppressLint("RestrictedApi")
             @Override
             //@SuppressLint("RestrictedApi")
@@ -399,9 +402,18 @@ public class Mix extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 mixStartFab.setVisibility(View.VISIBLE);
                 layout.setAlpha(1);
-                Toast.makeText(getApplicationContext(),getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
 
             }
+
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public void onFinish() {
+                super.onFinish();
+            }
         };
+    }
+    private void disableClickable(){
+
     }
 }

@@ -7,4 +7,7 @@
     <string name="onfailure_mix">Error. there is something wrong!</string>
     <string name="from">From</string>
     <string name="to">To</string>
+    <string name="delete_accepted">Delete</string>
+    <string name="delete_rejected">Ignore</string>
+    <string name="delete_dialog_messege">Delete this file?</string>
 </resources>
