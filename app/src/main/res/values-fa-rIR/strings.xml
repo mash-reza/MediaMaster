@@ -11,5 +11,7 @@
     <string name="delete_accepted">حذف</string>
     <string name="delete_rejected">انصراف</string>
     <string name="delete_dialog_messege">آیا از حذف این فایل مطمن هستید؟</string>
+    <string name="mix_audio_conflict1">زمان شروع از پایان جلوتر است!</string>
+    <string name="mix_audio_conflict2">زمان پایان از زمان شروع عقب تر است!</string>
 
 </resources>

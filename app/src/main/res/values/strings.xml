@@ -10,4 +10,6 @@
     <string name="delete_accepted">Delete</string>
     <string name="delete_rejected">Ignore</string>
     <string name="delete_dialog_messege">Delete this file?</string>
+    <string name="mix_audio_conflict1">Start time is larger than finish time!</string>
+    <string name="mix_audio_conflict2">Finish time is smaller than start time!</string>
 </resources>
