@@ -1,10 +1,12 @@
 package com.example.dubsmashmixer.activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -12,10 +14,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.VideoView;
 
 import com.example.dubsmashmixer.R;
@@ -37,6 +42,7 @@ public class Dub extends AppCompatActivity {
     private Button dubToRangeButton;
     private FloatingActionButton dubLoadVideoFab;
     private FloatingActionButton dubStartFab;
+    private SeekBar dubVideoSeekBar;
 
     //record
     private MediaRecorder mediaRecorder = null;
@@ -46,10 +52,22 @@ public class Dub extends AppCompatActivity {
 
     //uri to output file - it is sent via intent to dubbed activity for final result
     Uri outputUri = Uri.EMPTY;
+    Uri videoUri = Uri.EMPTY;
     File output;
 
     //flag for start fab
     boolean isRecording = false;
+
+    //handler for playback
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            dubVideoSeekBar.setMax(dubVideoView.getDuration());
+            dubVideoSeekBar.setProgress(dubVideoView.getCurrentPosition());
+            handler.postDelayed(this, 50);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +88,7 @@ public class Dub extends AppCompatActivity {
         dubToRangeButton = findViewById(R.id.dub_to_range_button);
         dubLoadVideoFab = findViewById(R.id.dub_load_video_fab);
         dubStartFab = findViewById(R.id.dub_start_fab);
+        dubVideoSeekBar = findViewById(R.id.dub_video_seekBar);
     }
 
     public void onStartClick(View v) {
@@ -109,10 +128,50 @@ public class Dub extends AppCompatActivity {
     }
 
     private void videoControl() {
+        dubVideoPlayImageButton.setOnClickListener(v -> {
+            if (dubVideoView.isPlaying()) {
+                dubVideoPlayImageButton.setImageResource(R.drawable.play_icon);
+                dubVideoView.pause();
+                handler.removeCallbacks(runnable);
+            } else {
+                dubVideoPlayImageButton.setImageResource(R.drawable.pause_icon);
+                dubVideoView.start();
+                handler.postDelayed(runnable,0);
+            }
+        });
+        dubStopImageButton.setOnClickListener(v -> {
+            dubVideoPlayImageButton.setImageResource(R.drawable.play_icon);
+            dubVideoView.pause();
+            dubVideoView.seekTo(0);
+            dubVideoSeekBar.setProgress(0);
+            handler.removeCallbacks(runnable);
+        });
+        dubVideoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser){
+                    dubVideoView.seekTo(progress);
+                }
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        dubVideoView.setOnCompletionListener(mp -> {
+            dubVideoPlayImageButton.setImageResource(R.drawable.play_icon);
+        });
+        dubLoadVideoFab.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, Constants.VIDEO_PICK_REQUEST_CODE);
+        });
     }
 
-    void play(){
+    void play() {
         player = new MediaPlayer();
         try {
             player.setDataSource(output.getAbsolutePath());
@@ -122,10 +181,32 @@ public class Dub extends AppCompatActivity {
         }
         player.start();
     }
-    void stop(){
+
+    void stop() {
         player.stop();
         player.release();
         player = null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            try {
+                this.videoUri = data.getData();
+                dubVideoView.setVideoURI(videoUri);
+                dubVideoSeekBar.setMax(dubVideoView.getDuration());
+            } catch (Exception e) {
+                Log.e(TAG, "onActivityResult: " + e);
+            }
+
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        videoControl();
     }
 
     @Override
