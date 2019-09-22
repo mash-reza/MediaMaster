@@ -12,4 +12,5 @@
     <string name="delete_dialog_messege">Delete this file?</string>
     <string name="mix_audio_conflict1">Start time is larger than finish time!</string>
     <string name="mix_audio_conflict2">Finish time is smaller than start time!</string>
+    <string name="mix_audio_conflict">Selected time for video starting is larger than selected time for finishing it! please select a correct time range.</string>
 </resources>

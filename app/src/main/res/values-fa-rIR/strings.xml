@@ -13,5 +13,7 @@
     <string name="delete_dialog_messege">آیا از حذف این فایل مطمن هستید؟</string>
     <string name="mix_audio_conflict1">زمان شروع از پایان جلوتر است!</string>
     <string name="mix_audio_conflict2">زمان پایان از زمان شروع عقب تر است!</string>
+    <string name="mix_audio_conflict">نقطه انتخاب شده برای شروع فیلم از نقطه انتخاب شده برای پایان آن بزرگ تر است! لطفا محدوده زمانی را به درستی انتخاب کنید.</string>
+
 
 </resources>

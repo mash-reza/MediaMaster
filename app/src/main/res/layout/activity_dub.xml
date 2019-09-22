@@ -60,8 +60,8 @@
 
             <ImageButton
                 android:id="@+id/dub_video_play_imageButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:background="@drawable/button_background_primary"
@@ -71,8 +71,8 @@
 
             <ImageButton
                 android:id="@+id/dub_video_stop_imageButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:background="@drawable/button_background_primary"
@@ -145,6 +145,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/load_icon"
         android:id="@+id/dub_load_video_fab"
+        app:fabSize="mini"
         app:layout_constraintStart_toStartOf="@+id/dub_video_cardView"
         app:layout_constraintEnd_toEndOf="@id/dub_video_cardView"
         app:layout_constraintBottom_toBottomOf="@id/dub_video_cardView"
