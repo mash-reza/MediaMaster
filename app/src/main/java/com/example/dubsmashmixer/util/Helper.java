@@ -45,20 +45,35 @@ public class Helper {
         return finalTimerString;
     }
 
-    public static String[] cmdBuilder(Bundle bundle) {
+    public static String[] mixCmdBuilder(Bundle bundle) {
         String string = "-y#-ss#00:" +
                 bundle.getString(Constants.MIX_BUNDLE_VIDEO_START_KEY) +
                 "#-t#00:" +
                 bundle.getString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY) +
                 "#-i#"
-                +bundle.getString(Constants.MIX_BUNDLE_VIDEO_PATH)
+                + bundle.getString(Constants.MIX_BUNDLE_VIDEO_PATH)
                 + "#-ss#00:" +
                 bundle.getString(Constants.MIX_BUNDLE_AUDIO_START_KEY) +
                 "#-t#00:" +
                 bundle.getString(Constants.MIX_BUNDLE_AUDIO_FINSIH_KEY) +
                 "#-i#"
-                +bundle.getString(Constants.MIX_BUNDLE_AUDIO_PATH)
+                + bundle.getString(Constants.MIX_BUNDLE_AUDIO_PATH)
                 + "#-c#copy#-map#0:v:0#-map#1:a:0#-shortest#"
+                + bundle.getString(Constants.MIX_BUNDLE_OUTPUT_PATH);
+        String[] array = string.split("#");
+        return array;
+    }
+
+    public static String[] dubCmdBuilder(Bundle bundle) {
+        String string = "-y#-ss#00:" +
+                bundle.getString(Constants.MIX_BUNDLE_VIDEO_START_KEY) +
+                "#-t#00:" +
+                bundle.getString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY) +
+                "#-i#"
+                + bundle.getString(Constants.MIX_BUNDLE_VIDEO_PATH)
+                + "#-i#"
+                + bundle.getString(Constants.MIX_BUNDLE_AUDIO_PATH)
+                + "#-c:a#aac#-map#0:v:0#-map#1:a:0#-shortest#"
                 + bundle.getString(Constants.MIX_BUNDLE_OUTPUT_PATH);
         String[] array = string.split("#");
         return array;

@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
@@ -24,9 +25,9 @@ import com.google.android.material.canvas.CanvasCompat;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    Button dubSmash;
-    Button mix;
-    Button dub;
+    ImageButton dubSmash;
+    ImageButton mix;
+    ImageButton dub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -4,35 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainActivity"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <Button
+    <ImageButton
         android:id="@+id/dubSmash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DubSmash"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:src="@drawable/audiocrop"
+        android:scaleType="fitXY"
+        android:background="@drawable/button_background_primary"
+        android:layout_marginStart="@dimen/large_margin"
         app:layout_constraintBottom_toTopOf="@+id/voiceMix"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
+        android:src="@drawable/mix"
         android:id="@+id/voiceMix"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mix"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:scaleType="fitXY"
+        android:layout_marginEnd="@dimen/large_margin"
         app:layout_constraintBottom_toTopOf="@id/dubbing"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dubSmash" />
+        app:layout_constraintTop_toBottomOf="@+id/dubSmash"
+        android:background="@drawable/button_background_primary"/>
 
-    <Button
+    <ImageButton
+        android:background="@drawable/button_background_primary"
+        android:src="@drawable/dub"
+        android:scaleType="fitCenter"
         android:id="@+id/dubbing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dubbing"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:layout_marginStart="@dimen/large_margin"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/voiceMix" />
 </androidx.constraintlayout.widget.ConstraintLayout>

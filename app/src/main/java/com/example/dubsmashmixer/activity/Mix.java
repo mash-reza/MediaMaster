@@ -378,7 +378,7 @@ public class Mix extends AppCompatActivity {
         String outPutFile = outPutFolder.getAbsolutePath() + "/out" + new Date().getTime() + ".mp4";
         outputUri = Uri.parse(outPutFile);
         bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH, outPutFile);
-        String[] cmd = Helper.cmdBuilder(bundle);
+        String[] cmd = Helper.mixCmdBuilder(bundle);
         try {
             FFmpeg.getInstance(this).execute(cmd, onExecuteBinaryResponseHandler());
         } catch (FFmpegCommandAlreadyRunningException e) {

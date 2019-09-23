@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,21 +23,25 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
 import com.example.dubsmashmixer.util.Helper;
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.google.android.exoplayer2.C;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-
-import javax.xml.validation.TypeInfoProvider;
 
 public class Dub extends AppCompatActivity {
     private static final String TAG = "Dub";
@@ -51,6 +56,8 @@ public class Dub extends AppCompatActivity {
     private FloatingActionButton dubStartFab;
     private SeekBar dubVideoSeekBar;
 
+    ImageView imageView;
+
     //record
     private MediaRecorder mediaRecorder = null;
 
@@ -58,7 +65,7 @@ public class Dub extends AppCompatActivity {
     private MediaPlayer player = null;
 
     //uri to output file - it is sent via intent to dubbed activity for final result
-    Uri outputUri = Uri.EMPTY;
+    Uri outputUri= Uri.EMPTY;
     Uri videoUri = Uri.EMPTY;
     File output;
 
@@ -84,6 +91,9 @@ public class Dub extends AppCompatActivity {
     AudioManager audioManager;
     int currentMusicVolume = 0;
 
+    //bundle fpr ffmpeg
+    Bundle bundle = new Bundle();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +104,7 @@ public class Dub extends AppCompatActivity {
         }
         audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
         initUI();
+        Glide.with(this).load(R.drawable.audio_visual).into(imageView);
     }
 
     private void initUI() {
@@ -105,27 +116,15 @@ public class Dub extends AppCompatActivity {
         dubLoadVideoFab = findViewById(R.id.dub_load_video_fab);
         dubStartFab = findViewById(R.id.dub_start_fab);
         dubVideoSeekBar = findViewById(R.id.dub_video_seekBar);
+        imageView = findViewById(R.id.visual);
     }
 
     public void onStartClick(View v) {
         if (from < to) {
             if (isRecording) {
                 stopRecording();
-                isRecording = false;
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,currentMusicVolume,0);
-                handler.removeCallbacks(runnable);
-                dubVideoView.pause();
-                play();
             } else {
                 startRecording();
-                isRecording = true;
-//                audioManager.setSpeakerphoneOn(false);
-                currentMusicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-                handler.removeCallbacks(runnable);
-                dubVideoView.seekTo((int) from);
-                dubVideoView.start();
-                handler.postDelayed(runnable, 0);
             }
         } else
             Toast.makeText(this, this.getResources().getString(R.string.mix_audio_conflict), Toast.LENGTH_LONG).show();
@@ -135,12 +134,10 @@ public class Dub extends AppCompatActivity {
     private void startRecording() {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        //File outputFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster/Dub/");
-        //Log.i(TAG, "startRecording: creating output file " + outputFolder.mkdirs());
-        //File output = new File(outputFolder.getAbsolutePath()+"out" + new Date().getTime() + ".3gp");
         output = new File(getFilesDir(), "audio.3gp");
+        bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH,output.getAbsolutePath());
         mediaRecorder.setOutputFile(output.getAbsolutePath());
         mediaRecorder.setMaxDuration((int) (to - from));
         try {
@@ -149,17 +146,77 @@ public class Dub extends AppCompatActivity {
             Log.e(TAG, "startRecording: ", e);
         }
         mediaRecorder.start();
+
+        currentMusicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+        handler.removeCallbacks(runnable);
+        dubVideoView.seekTo((int) from);
+        dubVideoView.start();
+        handler.postDelayed(runnable, 0);
+        isRecording = true;
     }
 
     private void stopRecording() {
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
+        File outPutFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster/Dub");
+        outPutFolder.mkdirs();
+        String outPutFile = outPutFolder.getAbsolutePath() + "/out" + new Date().getTime() + ".mp4";
+        outputUri = Uri.parse(outPutFile);
+        bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH, outPutFile);
+
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentMusicVolume, 0);
+        handler.removeCallbacks(runnable);
+        dubVideoView.pause();
+        try {
+            FFmpeg.getInstance(this).execute(Helper.dubCmdBuilder(bundle),
+                    new ExecuteBinaryResponseHandler() {
+                        //@SuppressLint("RestrictedApi")
+                        @SuppressLint({"RestrictedApi", "ClickableViewAccessibility"})
+                        @Override
+                        public void onStart() {
+                            super.onStart();
+                            //disable clicks
+                        }
+
+                        @Override
+                        public void onProgress(String message) {
+                            super.onProgress(message);
+                        }
+
+                        @SuppressLint("RestrictedApi")
+                        @Override
+                        //@SuppressLint("RestrictedApi")
+                        public void onSuccess(String message) {
+                            super.onSuccess(message);
+                            Intent intent = new Intent(getApplicationContext(), Mixed.class);
+                            intent.setData(outputUri);
+                            startActivity(intent);
+                        }
+
+                        @SuppressLint("RestrictedApi")
+                        @Override
+                        //@SuppressLint("RestrictedApi")
+                        public void onFailure(String message) {
+                            Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "onFailure: "+message);
+                        }
+
+                        @SuppressLint("ClickableViewAccessibility")
+                        @Override
+                        public void onFinish() {
+                            super.onFinish();
+                        }
+                    }
+            );
+        }catch (FFmpegCommandAlreadyRunningException e){
+            Log.e(TAG, "onStartClick: ",e );
+        }
+        isRecording = false;
     }
 
     private void videoControl() {
-        MediaController mediaController = new MediaController(this);
-        mediaController.setMediaPlayer(dubVideoView);
         dubVideoPlayImageButton.setOnClickListener(v -> {
             if (dubVideoView.isPlaying()) {
                 dubVideoPlayImageButton.setImageResource(R.drawable.play_icon);
@@ -203,30 +260,34 @@ public class Dub extends AppCompatActivity {
         });
         dubFromRangeButton.setOnClickListener(v -> {
             from = dubVideoView.getCurrentPosition();
-            dubFromRangeButton.setText(Helper.milliSecondsToTime(from));
+            String fromString = Helper.milliSecondsToTime(from);
+            dubFromRangeButton.setText(fromString);
+            bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY, fromString);
         });
         dubToRangeButton.setOnClickListener(v -> {
             to = dubVideoView.getCurrentPosition();
-            dubToRangeButton.setText(Helper.milliSecondsToTime(to));
+            String toString = Helper.milliSecondsToTime(to);
+            dubToRangeButton.setText(toString);
+            bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, toString);
         });
     }
 
-    void play() {
-        player = new MediaPlayer();
-        try {
-            player.setDataSource(output.getAbsolutePath());
-            player.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        player.start();
-    }
+//    void play() {
+//        player = new MediaPlayer();
+//        try {
+//            player.setDataSource(output.getAbsolutePath());
+//            player.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        player.start();
+//    }
 
-    void stop() {
-        player.stop();
-        player.release();
-        player = null;
-    }
+//    void stop() {
+//        player.stop();
+//        player.release();
+//        player = null;
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -236,6 +297,9 @@ public class Dub extends AppCompatActivity {
                 this.videoUri = data.getData();
                 dubVideoView.setVideoURI(videoUri);
                 dubVideoSeekBar.setMax(dubVideoView.getDuration());
+                //set
+                bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH,
+                        new File(Helper.getRealPathFromURI(videoUri, getApplicationContext())).getAbsolutePath());
             } catch (Exception e) {
                 Log.e(TAG, "onActivityResult: " + e);
             }
@@ -247,6 +311,10 @@ public class Dub extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
         videoControl();
+        handler.post(() -> {
+            if((dubVideoView.getCurrentPosition()==to)&&isRecording)
+                stopRecording();
+        });
     }
 
     @Override

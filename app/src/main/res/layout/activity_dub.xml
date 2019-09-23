@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.Dub">
+
     <androidx.cardview.widget.CardView
 
         android:id="@+id/dub_video_cardView"
@@ -81,7 +82,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/dub_videoView" />
 
 
-
             <SeekBar
                 android:id="@+id/dub_video_seekBar"
                 android:layout_width="0dp"
@@ -92,7 +92,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/dub_video_stop_imageButton"
                 app:layout_constraintTop_toTopOf="@id/dub_video_stop_imageButton" />
-
 
 
             <TextView
@@ -110,17 +109,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/dub_video_play_imageButton" />
 
             <Button
+                android:id="@+id/dub_from_range_button"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:id="@+id/dub_from_range_button"
+                android:layout_marginStart="@dimen/super_margin"
+                android:background="@color/colorAccent"
+                android:text="@string/from"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/medium_text_size"
-                android:text="@string/from"
-                android:background="@color/colorAccent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/dub_video_range_textView"
                 app:layout_constraintBottom_toBottomOf="@+id/dub_video_range_textView"
-                android:layout_marginStart="@dimen/super_margin"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/dub_video_range_textView" />
 
             <Button
                 android:id="@+id/dub_to_range_button"
@@ -140,25 +139,40 @@
 
 
     </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/visual"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginTop="@dimen/super_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginBottom="@dimen/large_margin"
+        app:layout_constraintBottom_toTopOf="@+id/dub_start_fab"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dub_video_cardView" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/dub_load_video_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/load_icon"
-        android:id="@+id/dub_load_video_fab"
         app:fabSize="mini"
-        app:layout_constraintStart_toStartOf="@+id/dub_video_cardView"
-        app:layout_constraintEnd_toEndOf="@id/dub_video_cardView"
         app:layout_constraintBottom_toBottomOf="@id/dub_video_cardView"
-        app:layout_constraintTop_toBottomOf="@id/dub_video_cardView"/>
+        app:layout_constraintEnd_toEndOf="@id/dub_video_cardView"
+        app:layout_constraintStart_toStartOf="@+id/dub_video_cardView"
+        app:layout_constraintTop_toBottomOf="@id/dub_video_cardView" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/dub_start_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/mic_icon"
-        android:id="@+id/dub_start_fab"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="@dimen/large_margin"
-        android:onClick="onStartClick"/>
+        android:onClick="onStartClick"
+        android:src="@drawable/mic_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
