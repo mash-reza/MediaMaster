@@ -1,16 +1,20 @@
 <resources>
     <string name="app_name">MediaMaster</string>
     <string name="video_file">Video File</string>
+    <string name="audio_file">Audio File</string>
     <string name="range">Range</string>
     <string name="onstart_mix">Process is started. Please wait!</string>
     <string name="onsuccess_mix">Successfully finished!</string>
-    <string name="onfailure_mix">Error. there is something wrong!</string>
+    <string name="onfailure_mix">Error. Could not make the output file!</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="delete_accepted">Delete</string>
     <string name="delete_rejected">Ignore</string>
     <string name="delete_dialog_messege">Delete this file?</string>
-    <string name="mix_audio_conflict1">Start time is larger than finish time!</string>
-    <string name="mix_audio_conflict2">Finish time is smaller than start time!</string>
-    <string name="mix_audio_conflict">Selected time for video starting is larger than selected time for finishing it! please select a correct time range.</string>
+    <string name="mix_video_conflict">Selected time for video starting is larger than selected time for finishing it! please select a correct time range.</string>
+    <string name="mix_audio_conflict">Selected time for audio starting is larger than selected time for finishing it! please select a correct time range.</string>
+    <string name="mix_both_conflict">Selected time for video and audio starting is larger than selected time for finishing them! please select a correct time range.</string>
+    <string name="mix_not_choosen_conflict">Please select a video and an audio to start mixing!</string>
+    <string name="recooding_started">Recording Started</string>
+    <string name="preparing_ouput">Preparing the output file. please wait a moment!</string>
 </resources>

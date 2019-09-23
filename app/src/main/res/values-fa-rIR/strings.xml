@@ -2,18 +2,22 @@
 <resources>
     <string name="app_name">مدیریت چندرسانه ای</string>
     <string name="video_file">فایل ویدیو</string>
+    <string name="audio_file">فایل صوتی</string>
     <string name="range">محدوده</string>
     <string name="onstart_mix">عملیات شروع شد. لطفا منتظر بمانید!</string>
     <string name="onsuccess_mix">عملیات با موفقیت انجام شد!</string>
-    <string name="onfailure_mix">خطا. مشکلی پیش آمده است!</string>
+    <string name="onfailure_mix">خطا. فایل خروجی ساخته نشد!</string>
     <string name="from">از</string>
     <string name="to">تا</string>
     <string name="delete_accepted">حذف</string>
     <string name="delete_rejected">انصراف</string>
     <string name="delete_dialog_messege">آیا از حذف این فایل مطمن هستید؟</string>
-    <string name="mix_audio_conflict1">زمان شروع از پایان جلوتر است!</string>
-    <string name="mix_audio_conflict2">زمان پایان از زمان شروع عقب تر است!</string>
-    <string name="mix_audio_conflict">نقطه انتخاب شده برای شروع فیلم از نقطه انتخاب شده برای پایان آن بزرگ تر است! لطفا محدوده زمانی را به درستی انتخاب کنید.</string>
+    <string name="mix_video_conflict">نقطه انتخاب شده برای شروع برش فیلم از نقطه انتخاب شده برای پایان آن بزرگ تر است! لطفا محدوده زمانی را به درستی انتخاب کنید.</string>
+    <string name="mix_audio_conflict">نقطه انتخاب شده برای شروع برش صوت از نقطه انتخاب شده برای پایان آن بزرگ تر است! لطفا محدوده زمانی را به درستی انتخاب کنید.</string>
+    <string name="mix_both_conflict">نقطه انتخاب شده برای شروع برش فیلم و صدا از نقطه انتخاب شده برای پایان آن ها بزرگ تر است! لطفا محدوده زمانی را به درستی انتخاب کنید.</string>
+    <string name="mix_not_choosen_conflict">برای شروع لطفا یک ویدیو و یک فیلم را انتخاب کنید!</string>
+    <string name="recooding_started">ضبط صدا شروع شد.</string>
+    <string name="preparing_ouput">در حال آماده سازی فایل خروجی، لطفا منتظر بمانید!</string>
 
 
 </resources>

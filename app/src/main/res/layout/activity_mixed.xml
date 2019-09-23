@@ -25,4 +25,15 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="@dimen/medium_margin"
         android:layout_marginTop="@dimen/small_margin"/>
+
+    <ImageButton
+        android:id="@+id/mixed_share_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:background="@drawable/share_icon"
+        android:onClick="onMixDeleteButtonClick"
+        app:layout_constraintEnd_toStartOf="@+id/mixed_delete_button"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

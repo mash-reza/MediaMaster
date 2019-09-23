@@ -25,9 +25,9 @@ import com.google.android.material.canvas.CanvasCompat;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    ImageButton dubSmash;
-    ImageButton mix;
-    ImageButton dub;
+    Button dubSmash;
+    Button mix;
+    Button dub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

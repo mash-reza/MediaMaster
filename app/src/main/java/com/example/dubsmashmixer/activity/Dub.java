@@ -2,6 +2,7 @@ package com.example.dubsmashmixer.activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -24,7 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -36,7 +37,6 @@ import com.example.dubsmashmixer.util.Helper;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.google.android.exoplayer2.C;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -55,8 +55,9 @@ public class Dub extends AppCompatActivity {
     private FloatingActionButton dubLoadVideoFab;
     private FloatingActionButton dubStartFab;
     private SeekBar dubVideoSeekBar;
-
-    ImageView imageView;
+    private ProgressBar progressBar;
+    private ImageView visualiser;
+    private ConstraintLayout innerLayout;
 
     //record
     private MediaRecorder mediaRecorder = null;
@@ -104,7 +105,7 @@ public class Dub extends AppCompatActivity {
         }
         audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
         initUI();
-        Glide.with(this).load(R.drawable.audio_visual).into(imageView);
+        Glide.with(this).load(R.drawable.audio_visual).into(visualiser);
     }
 
     private void initUI() {
@@ -116,7 +117,9 @@ public class Dub extends AppCompatActivity {
         dubLoadVideoFab = findViewById(R.id.dub_load_video_fab);
         dubStartFab = findViewById(R.id.dub_start_fab);
         dubVideoSeekBar = findViewById(R.id.dub_video_seekBar);
-        imageView = findViewById(R.id.visual);
+        visualiser = findViewById(R.id.visual);
+        progressBar = findViewById(R.id.dub_progressbar);
+        innerLayout = findViewById(R.id.dub_inner_layout);
     }
 
     public void onStartClick(View v) {
@@ -127,7 +130,7 @@ public class Dub extends AppCompatActivity {
                 startRecording();
             }
         } else
-            Toast.makeText(this, this.getResources().getString(R.string.mix_audio_conflict), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, this.getResources().getString(R.string.mix_video_conflict), Toast.LENGTH_LONG).show();
 
     }
 
@@ -153,6 +156,9 @@ public class Dub extends AppCompatActivity {
         dubVideoView.seekTo((int) from);
         dubVideoView.start();
         handler.postDelayed(runnable, 0);
+        progressBar.setVisibility(View.GONE);
+        visualiser.setVisibility(View.VISIBLE);
+        Toast.makeText(this, R.string.recooding_started, Toast.LENGTH_SHORT).show();
         isRecording = true;
     }
 
@@ -178,6 +184,10 @@ public class Dub extends AppCompatActivity {
                         public void onStart() {
                             super.onStart();
                             //disable clicks
+                            visualiser.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.VISIBLE);
+                            innerLayout.setAlpha(.3f);
+                            Toast.makeText(Dub.this,R.string.preparing_ouput, Toast.LENGTH_LONG).show();
                         }
 
                         @Override
@@ -199,7 +209,7 @@ public class Dub extends AppCompatActivity {
                         @Override
                         //@SuppressLint("RestrictedApi")
                         public void onFailure(String message) {
-                            Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),R.string.onfailure_mix, Toast.LENGTH_LONG).show();
                             Log.e(TAG, "onFailure: "+message);
                         }
 
@@ -207,6 +217,8 @@ public class Dub extends AppCompatActivity {
                         @Override
                         public void onFinish() {
                             super.onFinish();
+                            progressBar.setVisibility(View.GONE);
+                            innerLayout.setAlpha(1);
                         }
                     }
             );
