@@ -74,19 +74,24 @@
                         app:layout_constraintStart_toEndOf="@+id/video_file_textView"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <VideoView
-
-                        android:id="@+id/mix_videoView"
+                    <FrameLayout
+                        android:background="@android:color/black"
+                        android:id="@+id/mix_videoView_frame"
                         android:layout_width="match_parent"
-                        android:layout_height="230dp"
+                        android:layout_height="300dp"
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginTop="@dimen/medium_margin"
                         android:layout_marginEnd="@dimen/small_margin"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/video_file_textView" />
-
-
+                        app:layout_constraintTop_toBottomOf="@+id/video_file_textView">
+                        <VideoView
+                            android:id="@+id/mix_videoView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                             />
+                    </FrameLayout>
 
                     <ImageButton
                         android:id="@+id/mix_video_play_imageButton"
@@ -97,7 +102,7 @@
                         android:background="@drawable/button_background_primary"
                         android:src="@drawable/play_icon"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/mix_videoView" />
+                        app:layout_constraintTop_toBottomOf="@+id/mix_videoView_frame" />
 
 
                     <ImageButton
@@ -109,7 +114,7 @@
                         android:background="@drawable/button_background_primary"
                         android:src="@drawable/stop_icon"
                         app:layout_constraintStart_toEndOf="@+id/mix_video_play_imageButton"
-                        app:layout_constraintTop_toBottomOf="@+id/mix_videoView" />
+                        app:layout_constraintTop_toBottomOf="@+id/mix_videoView_frame" />
 
                     <SeekBar
                         android:id="@+id/mix_video_seekBar"
