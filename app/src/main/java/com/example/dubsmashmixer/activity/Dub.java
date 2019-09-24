@@ -53,7 +53,7 @@ public class Dub extends AppCompatActivity {
     private Button dubFromRangeButton;
     private Button dubToRangeButton;
     private FloatingActionButton dubLoadVideoFab;
-    private FloatingActionButton dubStartFab;
+    private ImageButton dubStartImageButton;
     private SeekBar dubVideoSeekBar;
     private ProgressBar progressBar;
     private ImageView visualiser;
@@ -115,7 +115,7 @@ public class Dub extends AppCompatActivity {
         dubFromRangeButton = findViewById(R.id.dub_from_range_button);
         dubToRangeButton = findViewById(R.id.dub_to_range_button);
         dubLoadVideoFab = findViewById(R.id.dub_load_video_fab);
-        dubStartFab = findViewById(R.id.dub_start_fab);
+        dubStartImageButton = findViewById(R.id.dub_start_image_button);
         dubVideoSeekBar = findViewById(R.id.dub_video_seekBar);
         visualiser = findViewById(R.id.visual);
         progressBar = findViewById(R.id.dub_progressbar);
