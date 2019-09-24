@@ -69,11 +69,19 @@ public class Mix extends AppCompatActivity {
 
     //handler for updating seek bar
     private Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
+    Runnable audioRunnable = new Runnable() {
         @Override
         public void run() {
             mixAudioSeekBar.setMax(audioPlayer.getDuration());
             mixAudioSeekBar.setProgress(audioPlayer.getCurrentPosition());
+            handler.postDelayed(this, 50);
+        }
+    };
+    Runnable videoRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mixVideoSeekBar.setMax(mixVideoView.getDuration());
+            mixVideoSeekBar.setProgress(mixVideoView.getCurrentPosition());
             handler.postDelayed(this, 50);
         }
     };
@@ -134,7 +142,7 @@ public class Mix extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(audioPlayer != null){
+        if (audioPlayer != null) {
             audioPlayer.pause();
         }
     }
@@ -142,8 +150,9 @@ public class Mix extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(audioPlayer != null){
-            handler.removeCallbacks(runnable);
+        if (audioPlayer != null) {
+            handler.removeCallbacks(videoRunnable);
+            handler.removeCallbacks(audioRunnable);
             audioPlayer.release();
             audioPlayer = null;
         }
@@ -157,13 +166,17 @@ public class Mix extends AppCompatActivity {
                 case Constants.VIDEO_PICK_REQUEST_CODE:
                     try {
                         this.videoUri = data.getData();
-                        Log.e(TAG, "onActivityResult: "+videoUri );
-                        Log.e(TAG, "onActivityResult: "+data.getData());
-                        Log.e(TAG, "onActivityResult: "+data.getData());
-                        Log.e(TAG, "onActivityResult: "+data.getData().getPath());
-                        Log.e(TAG, "onActivityResult: "+data.getData().getLastPathSegment());
-                        Log.e(TAG, "onActivityResult: "+data.getData().getPathSegments());
+                        Log.e(TAG, "onActivityResult: " + videoUri);
+                        Log.e(TAG, "onActivityResult: " + data.getData());
+                        Log.e(TAG, "onActivityResult: " + data.getData());
+                        Log.e(TAG, "onActivityResult: " + data.getData().getPath());
+                        Log.e(TAG, "onActivityResult: " + data.getData().getLastPathSegment());
+                        Log.e(TAG, "onActivityResult: " + data.getData().getPathSegments());
                         mixVideoView.setVideoURI(data.getData());
+                        mixVideoView.start();
+                        mixVideoView.pause();
+                        mixVideoView.seekTo(0);
+                        handler.postDelayed(videoRunnable, 0);
                         isMixVideoViewLoaded = true;
                     } catch (Exception e) {
                         Log.e(TAG, "onActivityResult: " + e);
@@ -175,6 +188,10 @@ public class Mix extends AppCompatActivity {
                         audioPlayer = new MediaPlayer();
                         audioPlayer.setDataSource(this, audioUri);
                         audioPlayer.prepare();
+                        audioPlayer.start();
+                        audioPlayer.pause();
+                        audioPlayer.seekTo(0);
+                        handler.postDelayed(audioRunnable, 0);
                     } catch (IOException e) {
                         Log.e(TAG, "onActivityResult: ", e);
                     }
@@ -190,14 +207,6 @@ public class Mix extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, Constants.VIDEO_PICK_REQUEST_CODE);
         });
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                mixVideoSeekBar.setMax(mixVideoView.getDuration());
-                mixVideoSeekBar.setProgress(mixVideoView.getCurrentPosition());
-                handler.postDelayed(this, 50);
-            }
-        };
 
         mixVideoPlayImageButton.setOnClickListener(v -> {
             //handler.removeCallbacks(runnable);
@@ -209,12 +218,12 @@ public class Mix extends AppCompatActivity {
                     mixVideoView.start();
                     mixVideoView.seekTo(mixVideoView.getCurrentPosition());
                 }
-                handler.postDelayed(runnable, 0);
+                handler.postDelayed(videoRunnable, 0);
             } else {
                 mixVideoPlayImageButton.setImageResource(R.drawable.pause_icon);
                 mixVideoView.pause();
                 mixVideoSeekBar.setProgress(mixVideoView.getCurrentPosition());
-                handler.removeCallbacks(runnable);
+                handler.removeCallbacks(videoRunnable);
             }
         });
         mixVideoStopImageButton.setOnClickListener(v -> {
@@ -222,7 +231,7 @@ public class Mix extends AppCompatActivity {
             mixVideoView.seekTo(0);
             mixVideoSeekBar.setProgress(0);
             mixVideoView.pause();
-            handler.removeCallbacks(runnable);
+            handler.removeCallbacks(videoRunnable);
         });
         mixVideoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -273,17 +282,17 @@ public class Mix extends AppCompatActivity {
                     if (audioPlayer.getCurrentPosition() == 0) {
                         audioPlayer.seekTo(0);
                         audioPlayer.start();
-                        handler.postDelayed(runnable, 0);
+                        handler.postDelayed(audioRunnable, 0);
                         mixAudioPlayPauseImageButton.setImageResource(R.drawable.pause_icon);
                     } else {
                         audioPlayer.start();
-                        handler.postDelayed(runnable, 0);
+                        handler.postDelayed(audioRunnable, 0);
                         mixAudioPlayPauseImageButton.setImageResource(R.drawable.pause_icon);
                     }
                 } else {
                     audioPlayer.pause();
                     mixAudioSeekBar.setProgress(audioPlayer.getCurrentPosition());
-                    handler.removeCallbacks(runnable);
+                    handler.removeCallbacks(audioRunnable);
                     mixAudioPlayPauseImageButton.setImageResource(R.drawable.play_icon);
                 }
         });
@@ -297,7 +306,7 @@ public class Mix extends AppCompatActivity {
                 audioPlayer.pause();
                 audioPlayer.seekTo(1);
                 //audioPlayer = null;
-                handler.removeCallbacks(runnable);
+                handler.removeCallbacks(audioRunnable);
                 mixAudioPlayPauseImageButton.setImageResource(R.drawable.play_icon);
             }
         });
@@ -310,9 +319,9 @@ public class Mix extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (audioPlayer != null)
-                if (fromUser) {
+                    if (fromUser) {
                         audioPlayer.seekTo(progress);
-                }
+                    }
             }
 
             @Override
@@ -364,9 +373,9 @@ public class Mix extends AppCompatActivity {
             Toast.makeText(this, R.string.mix_both_conflict, Toast.LENGTH_LONG).show();
         } else if (videoFrom > videoTo) {
             Toast.makeText(this, R.string.mix_video_conflict, Toast.LENGTH_LONG).show();
-        } else if (audioFrom > audioTo){
+        } else if (audioFrom > audioTo) {
             Toast.makeText(this, R.string.mix_audio_conflict, Toast.LENGTH_LONG).show();
-        }else Toast.makeText(this,R.string.mix_not_choosen_conflict, Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, R.string.mix_not_choosen_conflict, Toast.LENGTH_SHORT).show();
     }
 
     private ExecuteBinaryResponseHandler onExecuteBinaryResponseHandler() {
