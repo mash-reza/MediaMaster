@@ -66,7 +66,7 @@ public class Dub extends AppCompatActivity {
     private MediaPlayer player = null;
 
     //uri to output file - it is sent via intent to dubbed activity for final result
-    Uri outputUri= Uri.EMPTY;
+    Uri outputUri = Uri.EMPTY;
     Uri videoUri = Uri.EMPTY;
     File output;
 
@@ -142,7 +142,7 @@ public class Dub extends AppCompatActivity {
         mediaRecorder.setAudioSamplingRate(44100);
         mediaRecorder.setAudioEncodingBitRate(96000);
         output = new File(getFilesDir(), "audio.3gp");
-        bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH,output.getAbsolutePath());
+        bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH, output.getAbsolutePath());
         mediaRecorder.setOutputFile(output.getAbsolutePath());
         mediaRecorder.setMaxDuration((int) (to - from));
         try {
@@ -189,7 +189,7 @@ public class Dub extends AppCompatActivity {
                             visualiser.setVisibility(View.GONE);
                             progressBar.setVisibility(View.VISIBLE);
                             innerLayout.setAlpha(.3f);
-                            Toast.makeText(Dub.this,R.string.preparing_ouput, Toast.LENGTH_LONG).show();
+                            Toast.makeText(Dub.this, R.string.preparing_ouput, Toast.LENGTH_LONG).show();
                         }
 
                         @Override
@@ -211,8 +211,8 @@ public class Dub extends AppCompatActivity {
                         @Override
                         //@SuppressLint("RestrictedApi")
                         public void onFailure(String message) {
-                            Toast.makeText(getApplicationContext(),R.string.onfailure_mix, Toast.LENGTH_LONG).show();
-                            Log.e(TAG, "onFailure: "+message);
+                            Toast.makeText(getApplicationContext(), R.string.onfailure_mix, Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "onFailure: " + message);
                         }
 
                         @SuppressLint("ClickableViewAccessibility")
@@ -224,8 +224,8 @@ public class Dub extends AppCompatActivity {
                         }
                     }
             );
-        }catch (FFmpegCommandAlreadyRunningException e){
-            Log.e(TAG, "onStartClick: ",e );
+        } catch (FFmpegCommandAlreadyRunningException e) {
+            Log.e(TAG, "onStartClick: ", e);
         }
 //        play();
         isRecording = false;
@@ -253,9 +253,9 @@ public class Dub extends AppCompatActivity {
         dubVideoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
+                if (fromUser)
                     dubVideoView.seekTo(progress);
-                }
+
             }
 
             @Override
@@ -287,22 +287,6 @@ public class Dub extends AppCompatActivity {
         });
     }
 
-    void play() {
-        player = new MediaPlayer();
-        try {
-            player.setDataSource(output.getAbsolutePath());
-            player.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        player.start();
-    }
-
-//    void stop() {
-//        player.stop();
-//        player.release();
-//        player = null;
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -311,6 +295,9 @@ public class Dub extends AppCompatActivity {
             try {
                 this.videoUri = data.getData();
                 dubVideoView.setVideoURI(videoUri);
+                dubVideoView.start();
+                dubVideoView.pause();
+                handler.postDelayed(runnable, 0);
                 dubVideoSeekBar.setMax(dubVideoView.getDuration());
                 //set
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH,
@@ -327,7 +314,7 @@ public class Dub extends AppCompatActivity {
         super.onPostResume();
         videoControl();
         handler.post(() -> {
-            if((dubVideoView.getCurrentPosition()==to)&&isRecording)
+            if ((dubVideoView.getCurrentPosition() == to) && isRecording)
                 stopRecording();
         });
     }
