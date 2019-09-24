@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        <androidx.constraintlayout.widget.ConstraintLayout
             xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/dub_inner_layout"
+            android:id="@+id/audio_inner_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".activity.Dub">
+            tools:context=".activity.Audio">
 
             <androidx.cardview.widget.CardView
 
-                android:id="@+id/dub_video_cardView"
+                android:id="@+id/audio_video_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/small_margin"
@@ -36,7 +34,7 @@
                     app:layout_constraintBottom_toBottomOf="parent">
 
                     <TextView
-                        android:id="@+id/dub_video_file_textView"
+                        android:id="@+id/audio_video_file_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/small_margin"
@@ -48,9 +46,9 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        app:layout_constraintBottom_toBottomOf="@+id/dub_video_file_textView"
-                        android:id="@+id/dub_video_file_name_textView"
-                        app:layout_constraintStart_toEndOf="@+id/dub_video_file_textView"
+                        app:layout_constraintBottom_toBottomOf="@+id/audio_video_file_textView"
+                        android:id="@+id/audio_video_file_name_textView"
+                        app:layout_constraintStart_toEndOf="@+id/audio_video_file_textView"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintHorizontal_bias=".0"
                         android:layout_width="0dp"
@@ -66,7 +64,7 @@
 
                     <FrameLayout
                         android:background="@android:color/black"
-                        android:id="@+id/dub_videoView_frame"
+                        android:id="@+id/audio_videoView_frame"
                         android:layout_width="match_parent"
                         android:layout_height="300dp"
                         android:layout_marginStart="@dimen/small_margin"
@@ -74,9 +72,9 @@
                         android:layout_marginEnd="@dimen/small_margin"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/dub_video_file_textView">
+                        app:layout_constraintTop_toBottomOf="@+id/audio_video_file_textView">
                         <VideoView
-                            android:id="@+id/dub_videoView"
+                            android:id="@+id/audio_videoView"
                             android:layout_gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -85,7 +83,7 @@
 
 
                     <ImageButton
-                        android:id="@+id/dub_video_play_imageButton"
+                        android:id="@+id/audio_video_play_imageButton"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginStart="@dimen/small_margin"
@@ -93,34 +91,34 @@
                         android:background="@drawable/button_background_primary"
                         android:src="@drawable/play_icon"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/dub_videoView_frame"/>
+                        app:layout_constraintTop_toBottomOf="@+id/audio_videoView_frame"/>
 
                     <ImageButton
-                        android:id="@+id/dub_video_stop_imageButton"
+                        android:id="@+id/audio_video_stop_imageButton"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginTop="@dimen/medium_margin"
                         android:background="@drawable/button_background_primary"
                         android:src="@drawable/stop_icon"
-                        app:layout_constraintStart_toEndOf="@+id/dub_video_play_imageButton"
-                        app:layout_constraintTop_toBottomOf="@+id/dub_videoView_frame" />
+                        app:layout_constraintStart_toEndOf="@+id/audio_video_play_imageButton"
+                        app:layout_constraintTop_toBottomOf="@+id/audio_videoView_frame" />
 
 
                     <SeekBar
-                        android:id="@+id/dub_video_seekBar"
+                        android:id="@+id/audio_video_seekBar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginEnd="@dimen/small_margin"
-                        app:layout_constraintBottom_toBottomOf="@id/dub_video_stop_imageButton"
+                        app:layout_constraintBottom_toBottomOf="@id/audio_video_stop_imageButton"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/dub_video_stop_imageButton"
-                        app:layout_constraintTop_toTopOf="@id/dub_video_stop_imageButton" />
+                        app:layout_constraintStart_toEndOf="@+id/audio_video_stop_imageButton"
+                        app:layout_constraintTop_toTopOf="@id/audio_video_stop_imageButton" />
 
 
                     <TextView
-                        android:id="@+id/dub_video_range_textView"
+                        android:id="@+id/audio_video_range_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/small_margin"
@@ -131,10 +129,10 @@
                         android:textSize="@dimen/medium_text_size"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/dub_video_play_imageButton" />
+                        app:layout_constraintTop_toBottomOf="@+id/audio_video_play_imageButton" />
 
                     <Button
-                        android:id="@+id/dub_from_range_button"
+                        android:id="@+id/audio_from_range_button"
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"
                         android:layout_marginStart="@dimen/super_margin"
@@ -142,12 +140,12 @@
                         android:text="@string/from"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintBottom_toBottomOf="@+id/dub_video_range_textView"
+                        app:layout_constraintBottom_toBottomOf="@+id/audio_video_range_textView"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/dub_video_range_textView" />
+                        app:layout_constraintTop_toTopOf="@id/audio_video_range_textView" />
 
                     <Button
-                        android:id="@+id/dub_to_range_button"
+                        android:id="@+id/audio_to_range_button"
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"
                         android:layout_marginEnd="@dimen/super_margin"
@@ -155,9 +153,9 @@
                         android:text="@string/to"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintBottom_toBottomOf="@+id/dub_video_range_textView"
+                        app:layout_constraintBottom_toBottomOf="@+id/audio_video_range_textView"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/dub_video_range_textView" />
+                        app:layout_constraintTop_toTopOf="@id/audio_video_range_textView" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -165,41 +163,27 @@
 
             </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/visual"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginTop="@dimen/super_margin"
-                android:layout_marginEnd="@dimen/small_margin"
-                android:layout_marginBottom="@dimen/large_margin"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/dub_start_image_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dub_video_cardView" />
-
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/dub_load_video_fab"
+                android:id="@+id/audio_load_video_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/load_icon"
                 app:fabSize="mini"
-                app:layout_constraintBottom_toBottomOf="@id/dub_video_cardView"
-                app:layout_constraintEnd_toEndOf="@id/dub_video_cardView"
-                app:layout_constraintStart_toStartOf="@+id/dub_video_cardView"
-                app:layout_constraintTop_toBottomOf="@id/dub_video_cardView" />
+                app:layout_constraintBottom_toBottomOf="@id/audio_video_cardView"
+                app:layout_constraintEnd_toEndOf="@id/audio_video_cardView"
+                app:layout_constraintStart_toStartOf="@+id/audio_video_cardView"
+                app:layout_constraintTop_toBottomOf="@id/audio_video_cardView" />
 
             <ImageButton
-                android:id="@+id/dub_start_image_button"
+                android:id="@+id/audio_start_image_button"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginBottom="@dimen/medium_margin"
                 android:background="@drawable/button_background_primary"
-                android:onClick="onStartClick"
-                android:src="@drawable/mic_icon"
+                android:onClick="onAudioStartClick"
+                android:src="@drawable/audio_icon"
                 android:layout_marginTop="@dimen/extra_margin"
-                app:layout_constraintTop_toBottomOf="@+id/dub_load_video_fab"
+                app:layout_constraintTop_toBottomOf="@+id/audio_load_video_fab"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -209,7 +193,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ProgressBar
-            android:id="@+id/dub_progressbar"
+            android:id="@+id/audio_progressbar"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginStart="@dimen/small_margin"

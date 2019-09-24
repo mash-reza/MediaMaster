@@ -48,7 +48,7 @@
 
                     <TextView
                         app:layout_constraintBottom_toBottomOf="@+id/dub_video_file_textView"
-                        android:id="@+id/dub_video_file_name_textView"
+                        android:id="@+id/audio_video_file_name_textView"
                         app:layout_constraintStart_toEndOf="@+id/dub_video_file_textView"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintHorizontal_bias=".0"

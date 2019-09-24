@@ -14,7 +14,6 @@ import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -102,10 +101,6 @@ public class Dub extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dub);
-        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO}, Constants.AUDIO_RECORD_PERMISSION_REQUEST_CODE);
-        }
         audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
         initUI();
         Glide.with(this).load(R.drawable.audio_visual).into(visualiser);
@@ -123,7 +118,7 @@ public class Dub extends AppCompatActivity {
         visualiser = findViewById(R.id.visual);
         progressBar = findViewById(R.id.dub_progressbar);
         innerLayout = findViewById(R.id.dub_inner_layout);
-        dubVideoFileNameTextView = findViewById(R.id.dub_video_file_name_textView);
+        dubVideoFileNameTextView = findViewById(R.id.audio_video_file_name_textView);
     }
 
     public void onStartClick(View v) {
@@ -172,7 +167,7 @@ public class Dub extends AppCompatActivity {
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
-        File outPutFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster/Dub");
+        File outPutFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster");
         outPutFolder.mkdirs();
         String outPutFile = outPutFolder.getAbsolutePath() + "/out" + new Date().getTime() + ".mp4";
         outputUri = Uri.parse(outPutFile);

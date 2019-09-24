@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         dub = findViewById(R.id.dubbing);
         history = findViewById(R.id.history);
         history.setOnClickListener(v -> {
-            startActivity(new Intent(this,mic.class));
+            startActivity(new Intent(this, mic.class));
         });
         dubSmash.setOnClickListener(v -> startActivity(new Intent(this, Audio.class)));
         mix.setOnClickListener(v -> startActivity(new Intent(this, Mix.class)));
@@ -68,46 +68,17 @@ public class MainActivity extends AppCompatActivity {
         } catch (FFmpegNotSupportedException e) {
             e.printStackTrace();
         }
-        try {
-            FFmpeg.getInstance(this).execute(new String[]{"--enable","-libopencore","-amrwb"}, new FFmpegExecuteResponseHandler() {
-                @Override
-                public void onSuccess(String message) {
-                    Log.i(TAG, "onSuccess: "+message);
-                }
-
-                @Override
-                public void onProgress(String message) {
-                    Log.i(TAG, "onProgress: "+message);
-                }
-
-                @Override
-                public void onFailure(String message) {
-                    Log.i(TAG, "onFailure: "+message);
-                }
-
-                @Override
-                public void onStart() {
-
-                }
-
-                @Override
-                public void onFinish() {
-
-                }
-            });
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            e.printStackTrace();
-        }
     }
 
     //check permission
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= 23 &&
-                (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                        PackageManager.PERMISSION_GRANTED)) {
+                (((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) ||
+                        (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED))) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.RECORD_AUDIO},
                     Constants.READ_EXTERNAL_PERMISSION_REQUEST_CODE);
         }
     }

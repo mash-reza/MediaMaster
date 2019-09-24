@@ -79,6 +79,19 @@ public class Helper {
         String[] array = string.split("#");
         return array;
     }
+//
+//    public static String[] audioCmdBuilder(Bundle bundle) {
+//        String string = "-y#-ss#00:" +
+//                bundle.getString(Constants.MIX_BUNDLE_VIDEO_START_KEY) +
+//                "#-t#00:" +
+//                bundle.getString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY) +
+//                "#-i#"
+//                + bundle.getString(Constants.MIX_BUNDLE_VIDEO_PATH)
+//                + "#-vn#-c:a#libmp3lame#"
+//                + bundle.getString(Constants.MIX_BUNDLE_OUTPUT_PATH);
+//        String[] array = string.split("#");
+//        return array;
+//    }
 
     public static String[] audioCmdBuilder(Bundle bundle) {
         String string = "-y#-ss#00:" +
@@ -87,7 +100,7 @@ public class Helper {
                 bundle.getString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY) +
                 "#-i#"
                 + bundle.getString(Constants.MIX_BUNDLE_VIDEO_PATH)
-                + "#-c:a#copy#-shortest#"
+                + "#-vn#-c:a#libmp3lame#"
                 + bundle.getString(Constants.MIX_BUNDLE_OUTPUT_PATH);
         String[] array = string.split("#");
         return array;
