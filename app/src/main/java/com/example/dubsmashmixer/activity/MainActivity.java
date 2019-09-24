@@ -18,7 +18,9 @@ import android.widget.ImageButton;
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.google.android.material.canvas.CanvasCompat;
 
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     Button dubSmash;
     Button mix;
     Button dub;
+    Button history;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
         dubSmash = findViewById(R.id.dubSmash);
         mix = findViewById(R.id.voiceMix);
         dub = findViewById(R.id.dubbing);
+        history = findViewById(R.id.history);
+        history.setOnClickListener(v -> {
+            startActivity(new Intent(this,mic.class));
+        });
         dubSmash.setOnClickListener(v -> startActivity(new Intent(this, DubSmash.class)));
         mix.setOnClickListener(v -> startActivity(new Intent(this, Mix.class)));
         dub.setOnClickListener(v -> startActivity(new Intent(this, Dub.class)));
@@ -63,6 +70,36 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } catch (FFmpegNotSupportedException e) {
+            e.printStackTrace();
+        }
+        try {
+            FFmpeg.getInstance(this).execute(new String[]{"--enable","-libopencore","-amrwb"}, new FFmpegExecuteResponseHandler() {
+                @Override
+                public void onSuccess(String message) {
+                    Log.i(TAG, "onSuccess: "+message);
+                }
+
+                @Override
+                public void onProgress(String message) {
+                    Log.i(TAG, "onProgress: "+message);
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.i(TAG, "onFailure: "+message);
+                }
+
+                @Override
+                public void onStart() {
+
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            });
+        } catch (FFmpegCommandAlreadyRunningException e) {
             e.printStackTrace();
         }
     }

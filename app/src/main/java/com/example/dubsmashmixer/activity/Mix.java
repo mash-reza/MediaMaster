@@ -33,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Date;
 
 public class Mix extends AppCompatActivity {
@@ -162,6 +163,12 @@ public class Mix extends AppCompatActivity {
                 case Constants.VIDEO_PICK_REQUEST_CODE:
                     try {
                         this.videoUri = data.getData();
+                        Log.e(TAG, "onActivityResult: "+videoUri );
+                        Log.e(TAG, "onActivityResult: "+data.getData());
+                        Log.e(TAG, "onActivityResult: "+data.getData());
+                        Log.e(TAG, "onActivityResult: "+data.getData().getPath());
+                        Log.e(TAG, "onActivityResult: "+data.getData().getLastPathSegment());
+                        Log.e(TAG, "onActivityResult: "+data.getData().getPathSegments());
                         mixVideoView.setVideoURI(data.getData());
                         mixRangeVideoView.setVideoURI(data.getData());
                         isMixVideoViewLoaded = true;

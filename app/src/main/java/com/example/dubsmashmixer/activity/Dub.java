@@ -137,8 +137,10 @@ public class Dub extends AppCompatActivity {
     private void startRecording() {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mediaRecorder.setAudioSamplingRate(44100);
+        mediaRecorder.setAudioEncodingBitRate(96000);
         output = new File(getFilesDir(), "audio.3gp");
         bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH,output.getAbsolutePath());
         mediaRecorder.setOutputFile(output.getAbsolutePath());
@@ -225,6 +227,7 @@ public class Dub extends AppCompatActivity {
         }catch (FFmpegCommandAlreadyRunningException e){
             Log.e(TAG, "onStartClick: ",e );
         }
+//        play();
         isRecording = false;
     }
 
@@ -284,16 +287,16 @@ public class Dub extends AppCompatActivity {
         });
     }
 
-//    void play() {
-//        player = new MediaPlayer();
-//        try {
-//            player.setDataSource(output.getAbsolutePath());
-//            player.prepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        player.start();
-//    }
+    void play() {
+        player = new MediaPlayer();
+        try {
+            player.setDataSource(output.getAbsolutePath());
+            player.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        player.start();
+    }
 
 //    void stop() {
 //        player.stop();
