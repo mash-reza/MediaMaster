@@ -100,7 +100,7 @@ public class Helper {
                 bundle.getString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY) +
                 "#-i#"
                 + bundle.getString(Constants.MIX_BUNDLE_VIDEO_PATH)
-                + "#-vn#-c:a#libmp3lame#"
+                + "#-c:a#libmp3lame#"
                 + bundle.getString(Constants.MIX_BUNDLE_OUTPUT_PATH);
         String[] array = string.split("#");
         return array;

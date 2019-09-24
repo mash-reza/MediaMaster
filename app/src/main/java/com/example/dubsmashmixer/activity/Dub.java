@@ -138,8 +138,8 @@ public class Dub extends AppCompatActivity {
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mediaRecorder.setAudioSamplingRate(44100);
-        mediaRecorder.setAudioEncodingBitRate(96000);
+        mediaRecorder.setAudioSamplingRate(96000);
+        mediaRecorder.setAudioEncodingBitRate(44100);
         output = new File(getFilesDir(), "audio.3gp");
         bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH, output.getAbsolutePath());
         mediaRecorder.setOutputFile(output.getAbsolutePath());

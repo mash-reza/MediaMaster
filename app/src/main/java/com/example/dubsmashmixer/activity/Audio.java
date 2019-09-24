@@ -124,9 +124,9 @@ public class Audio extends AppCompatActivity {
                         audioProgressBar.setVisibility(View.GONE);
                         audioInnerLayout.setAlpha(1);
                         Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
-                        //Intent intent = new Intent(getApplicationContext(), Mixed.class);
-                        //intent.setData(outputUri);
-                        //startActivity(intent);
+                        Intent intent = new Intent(getApplicationContext(), Mixed.class);
+                        intent.setData(Uri.parse(output));
+                        startActivity(intent);
                     }
 
                     @Override

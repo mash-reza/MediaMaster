@@ -153,6 +153,15 @@ public class Mix extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (audioPlayer != null) {
+            audioPlayer.pause();
+            audioPlayer.seekTo(0);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (audioPlayer != null) {
             handler.removeCallbacks(videoRunnable);
             handler.removeCallbacks(audioRunnable);
             audioPlayer.release();
@@ -180,7 +189,7 @@ public class Mix extends AppCompatActivity {
                         mixVideoView.seekTo(0);
                         handler.postDelayed(videoRunnable, 0);
                         isMixVideoViewLoaded = true;
-                        videoFileNameTextView.setText(new File(Helper.getRealPathFromURI(videoUri,getApplicationContext())).getName());
+                        videoFileNameTextView.setText(new File(Helper.getRealPathFromURI(videoUri, getApplicationContext())).getName());
                     } catch (Exception e) {
                         Log.e(TAG, "onActivityResult: " + e);
                     }
@@ -195,7 +204,7 @@ public class Mix extends AppCompatActivity {
                         audioPlayer.pause();
                         audioPlayer.seekTo(0);
                         handler.postDelayed(audioRunnable, 0);
-                        audioFileNameTextView.setText(new File(Helper.getRealPathFromURI(audioUri,getApplicationContext())).getName());
+                        audioFileNameTextView.setText(new File(Helper.getRealPathFromURI(audioUri, getApplicationContext())).getName());
                     } catch (IOException e) {
                         Log.e(TAG, "onActivityResult: ", e);
                     }

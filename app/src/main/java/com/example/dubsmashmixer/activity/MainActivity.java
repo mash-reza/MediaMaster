@@ -20,6 +20,8 @@ import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         dub = findViewById(R.id.dubbing);
         history = findViewById(R.id.history);
         history.setOnClickListener(v -> {
-            startActivity(new Intent(this, mic.class));
+            startActivity(new Intent(this, Files.class));
         });
         dubSmash.setOnClickListener(v -> startActivity(new Intent(this, Audio.class)));
         mix.setOnClickListener(v -> startActivity(new Intent(this, Mix.class)));
