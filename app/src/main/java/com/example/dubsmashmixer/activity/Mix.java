@@ -45,11 +45,8 @@ public class Mix extends AppCompatActivity {
     private VideoView mixVideoView;
     private ImageButton mixVideoPlayImageButton;
     private ImageButton mixVideoStopImageButton;
-    private TextView mixRangeTimeTextView;
     private SeekBar mixVideoSeekBar;
     private FloatingActionButton loadVideoFab;
-    private ImageView mixVideoViewRangeBackgroundImageView;
-    private VideoView mixRangeVideoView;
     private Button mixVideoFromButton;
     private Button mixVideoToButton;
 
@@ -107,13 +104,10 @@ public class Mix extends AppCompatActivity {
         mixVideoView = findViewById(R.id.mix_videoView);
         mixVideoPlayImageButton = findViewById(R.id.mix_video_play_imageButton);
         mixVideoStopImageButton = findViewById(R.id.mix_video_stop_imageButton);
-        mixRangeTimeTextView = findViewById(R.id.mix_range_time_textView);
         mixVideoFromButton = findViewById(R.id.mix_video_from_button);
         mixVideoToButton = findViewById(R.id.mix_video_to_button);
         mixVideoSeekBar = findViewById(R.id.mix_video_seekBar);
         loadVideoFab = findViewById(R.id.load_video_fab);
-        mixVideoViewRangeBackgroundImageView = findViewById(R.id.mix_videoView_range_background_imageView);
-        mixRangeVideoView = findViewById(R.id.mix_range_videoView);
         //init audio card
         audioFileNameTextView = findViewById(R.id.audio_file_name_textView);
         mixAudioPlayPauseImageButton = findViewById(R.id.mix_audio_play_imageButton);
@@ -170,7 +164,6 @@ public class Mix extends AppCompatActivity {
                         Log.e(TAG, "onActivityResult: "+data.getData().getLastPathSegment());
                         Log.e(TAG, "onActivityResult: "+data.getData().getPathSegments());
                         mixVideoView.setVideoURI(data.getData());
-                        mixRangeVideoView.setVideoURI(data.getData());
                         isMixVideoViewLoaded = true;
                     } catch (Exception e) {
                         Log.e(TAG, "onActivityResult: " + e);

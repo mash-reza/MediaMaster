@@ -86,44 +86,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/video_file_textView" />
 
-                    <ImageView
-                        android:id="@+id/mix_videoView_range_background_imageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="230dp"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/medium_margin"
-                        android:layout_marginEnd="@dimen/small_margin"
-                        android:alpha=".65"
-                        android:src="@android:color/black"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="@+id/mix_videoView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/video_file_textView" />
-
-                    <VideoView
-                        android:id="@+id/mix_range_videoView"
-                        android:layout_width="240dp"
-                        android:layout_height="135dp"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="@+id/mix_videoView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/mix_videoView"
-                        app:layout_constraintTop_toTopOf="@+id/mix_videoView" />
-
-                    <TextView
-                        android:id="@+id/mix_range_time_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:alpha=".4"
-                        android:background="@android:color/white"
-                        android:textColor="@color/text_color_black"
-                        android:textSize="@dimen/large_text_size"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="@id/mix_range_videoView"
-                        app:layout_constraintEnd_toEndOf="@id/mix_range_videoView"
-                        app:layout_constraintStart_toStartOf="@id/mix_range_videoView"
-                        app:layout_constraintTop_toTopOf="@id/mix_range_videoView" />
 
 
                     <ImageButton
