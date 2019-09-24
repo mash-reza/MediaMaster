@@ -9,8 +9,8 @@ import android.widget.ThemedSpinnerAdapter;
 
 import com.example.dubsmashmixer.R;
 
-public class DubSmash extends AppCompatActivity {
-    private static final String TAG = "DubSmash";
+public class Audio extends AppCompatActivity {
+    private static final String TAG = "Audio";
 ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -3,17 +3,14 @@ package com.example.dubsmashmixer.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PermissionChecker;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
@@ -22,7 +19,6 @@ import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
-import com.google.android.material.canvas.CanvasCompat;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -43,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         history.setOnClickListener(v -> {
             startActivity(new Intent(this,mic.class));
         });
-        dubSmash.setOnClickListener(v -> startActivity(new Intent(this, DubSmash.class)));
+        dubSmash.setOnClickListener(v -> startActivity(new Intent(this, Audio.class)));
         mix.setOnClickListener(v -> startActivity(new Intent(this, Mix.class)));
         dub.setOnClickListener(v -> startActivity(new Intent(this, Dub.class)));
         checkPermission();

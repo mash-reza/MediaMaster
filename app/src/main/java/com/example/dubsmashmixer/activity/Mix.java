@@ -3,6 +3,7 @@ package com.example.dubsmashmixer.activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import com.example.dubsmashmixer.util.Helper;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.google.android.exoplayer2.util.UriUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -178,6 +180,7 @@ public class Mix extends AppCompatActivity {
                         mixVideoView.seekTo(0);
                         handler.postDelayed(videoRunnable, 0);
                         isMixVideoViewLoaded = true;
+                        videoFileNameTextView.setText(new File(Helper.getRealPathFromURI(videoUri,getApplicationContext())).getName());
                     } catch (Exception e) {
                         Log.e(TAG, "onActivityResult: " + e);
                     }
@@ -192,6 +195,7 @@ public class Mix extends AppCompatActivity {
                         audioPlayer.pause();
                         audioPlayer.seekTo(0);
                         handler.postDelayed(audioRunnable, 0);
+                        audioFileNameTextView.setText(new File(Helper.getRealPathFromURI(audioUri,getApplicationContext())).getName());
                     } catch (IOException e) {
                         Log.e(TAG, "onActivityResult: ", e);
                     }

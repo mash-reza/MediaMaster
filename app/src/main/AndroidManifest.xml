@@ -28,7 +28,7 @@
         <activity android:name=".activity.Mixed" />
         <activity android:name=".activity.Dub" />
         <activity android:name=".activity.Mix" />
-        <activity android:name=".activity.DubSmash" />
+        <activity android:name=".activity.Audio" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

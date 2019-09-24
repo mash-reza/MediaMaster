@@ -28,6 +28,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -59,6 +60,7 @@ public class Dub extends AppCompatActivity {
     private ProgressBar progressBar;
     private ImageView visualiser;
     private ConstraintLayout innerLayout;
+    TextView dubVideoFileNameTextView;
 
     //record
     private MediaRecorder mediaRecorder = null;
@@ -121,6 +123,7 @@ public class Dub extends AppCompatActivity {
         visualiser = findViewById(R.id.visual);
         progressBar = findViewById(R.id.dub_progressbar);
         innerLayout = findViewById(R.id.dub_inner_layout);
+        dubVideoFileNameTextView = findViewById(R.id.dub_video_file_name_textView);
     }
 
     public void onStartClick(View v) {
@@ -303,6 +306,7 @@ public class Dub extends AppCompatActivity {
                 //set
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH,
                         new File(Helper.getRealPathFromURI(videoUri, getApplicationContext())).getAbsolutePath());
+                dubVideoFileNameTextView.setText(new File(Helper.getRealPathFromURI(videoUri,getApplicationContext())).getName());
             } catch (Exception e) {
                 Log.e(TAG, "onActivityResult: " + e);
             }
