@@ -17,4 +17,5 @@
     <string name="mix_not_choosen_conflict">Please select a video and an audio to start mixing!</string>
     <string name="recooding_started">Recording Started</string>
     <string name="preparing_ouput">Preparing the output file. please wait a moment!</string>
+    <string name="share_intent_title">Share</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.dubsmashmixer.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -32,7 +33,7 @@ public class Mixed extends AppCompatActivity {
     DataSource.Factory mediaDataSourceFactory;
     PlayerView playerView;
     ImageButton deleteButton;
-    Uri uri= Uri.EMPTY;
+    Uri uri = Uri.EMPTY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +43,25 @@ public class Mixed extends AppCompatActivity {
         uri = getIntent().getData();
     }
 
-    public void onMixDeleteButtonClick(View v){
+    public void onMixDubShareButtonClick(View v) {
+        File file = new File(uri.getPath());
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(this,
+                this.getApplicationContext().getPackageName() + ".provider"
+                , file));
+        shareIntent.setType("video/mp4");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_intent_title)));
+    }
+
+    public void onMixDeleteButtonClick(View v) {
         File file = new File(uri.getPath());
         try {
             new AlertDialog.Builder(this).setMessage(R.string.delete_dialog_messege)
                     .setPositiveButton(R.string.delete_accepted, (dialog, id) -> {
                         boolean isDeleted = file.delete();
-                        Log.i(TAG, "onMixDeleteButtonClick: "+isDeleted);
+                        Log.i(TAG, "onMixDeleteButtonClick: " + isDeleted);
                         finish();
                     })
                     .setNegativeButton(R.string.delete_rejected, (dialog, id) -> {

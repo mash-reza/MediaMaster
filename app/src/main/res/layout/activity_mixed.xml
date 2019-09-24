@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/small_margin"
         android:layout_marginEnd="@dimen/small_margin"
         android:background="@drawable/share_icon"
-        android:onClick="onMixDeleteButtonClick"
+        android:onClick="onMixDubShareButtonClick"
         app:layout_constraintEnd_toStartOf="@+id/mixed_delete_button"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

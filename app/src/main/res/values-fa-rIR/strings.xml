@@ -18,6 +18,8 @@
     <string name="mix_not_choosen_conflict">برای شروع لطفا یک ویدیو و یک فیلم را انتخاب کنید!</string>
     <string name="recooding_started">ضبط صدا شروع شد.</string>
     <string name="preparing_ouput">در حال آماده سازی فایل خروجی، لطفا منتظر بمانید!</string>
+    <string name="share_intent_title">به اشتراک گذاری</string>
+
 
 
 </resources>
