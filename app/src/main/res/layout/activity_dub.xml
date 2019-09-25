@@ -265,6 +265,7 @@
                     app:layout_constraintTop_toTopOf="@id/dub_video_stop_imageView" />
 
                 <Button
+                    android:layout_marginTop="@dimen/small_margin"
                     android:id="@+id/dub_video_from_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

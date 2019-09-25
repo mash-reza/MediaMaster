@@ -248,23 +248,12 @@ public class Dub extends AppCompatActivity {
         } catch (FFmpegCommandAlreadyRunningException e) {
             Log.e(TAG, "onStartClick: ", e);
         }
-//        play();
         isRecording = false;
     }
 
     private void videoControl() {
         dubVideoPlayImageView.setOnClickListener(v -> {
-//            if (dubVideoView.isPlaying()) {
-//                Glide.with(this).load("file:///android_asset/images/play3.png").into(dubVideoPlayImageView);
-//                dubVideoView.pause();
-//                handler.removeCallbacks(runnable);
-//            } else {
-//                Glide.with(this).load("file:///android_asset/images/pause3.png").into(dubVideoPlayImageView);
-//                dubVideoView.start();
-//                handler.postDelayed(runnable, 0);
-//            }
             if (!dubVideoView.isPlaying()) {
-//                mixVideoPlayImageView.setImageResource(R.drawable.play_icon);
                 Glide.with(this).load("file:///android_asset/images/play3.png").into(dubVideoPlayImageView);
                 if (dubVideoView.getCurrentPosition() == 0)
                     dubVideoView.start();
@@ -274,7 +263,6 @@ public class Dub extends AppCompatActivity {
                 }
                 handler.postDelayed(runnable, 0);
             } else {
-//                mixVideoPlayImageView.setImageResource(R.drawable.pause_icon);
                 Glide.with(this).load("file:///android_asset/images/pause3.png").into(dubVideoPlayImageView);
                 dubVideoView.pause();
                 dubVideoSeekBar.setProgress(dubVideoView.getCurrentPosition());
