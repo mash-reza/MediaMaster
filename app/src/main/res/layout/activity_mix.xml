@@ -33,8 +33,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.cardview.widget.CardView
 
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/mix_video_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,307 +45,276 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <TextView
+                    android:id="@+id/video_file_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:text="@string/video_file"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/medium_text_size"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/video_file_name_textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/small_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/video_file_textView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias=".0"
+                    app:layout_constraintStart_toEndOf="@+id/video_file_textView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:id="@+id/frame"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    android:layout_height="250dp"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/video_file_textView" />
 
-                    <TextView
-                        android:id="@+id/video_file_textView"
+                <FrameLayout
+                    android:id="@+id/mix_videoView_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:background="@android:color/black"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/frame"
+                    app:layout_constraintEnd_toEndOf="@+id/frame"
+                    app:layout_constraintStart_toStartOf="@+id/frame"
+                    app:layout_constraintTop_toTopOf="@+id/frame">
+
+                    <VideoView
+                        android:id="@+id/mix_videoView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/small_margin"
-                        android:text="@string/video_file"
-                        android:textColor="@color/text_color_black"
-                        android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_gravity="center" />
+                </FrameLayout>
 
-                    <TextView
-                        app:layout_constraintBottom_toBottomOf="@+id/video_file_textView"
-                        android:id="@+id/video_file_name_textView"
-                        app:layout_constraintHorizontal_bias=".0"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/medium_margin"
-                        android:layout_marginTop="@dimen/small_margin"
-                        android:layout_marginEnd="@dimen/small_margin"
-                        android:textColor="@color/text_color_black"
-                        android:textSize="@dimen/small_text_size"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        app:layout_constraintStart_toEndOf="@+id/video_file_textView"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+                <ImageView
+                    android:id="@+id/mix_video_frame_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:scaleType="fitXY"
+                    app:layout_constraintBottom_toBottomOf="@+id/frame"
+                    app:layout_constraintEnd_toEndOf="@+id/frame"
+                    app:layout_constraintStart_toStartOf="@+id/frame"
+                    app:layout_constraintTop_toTopOf="@+id/frame" />
 
-                    <FrameLayout
-                        android:background="@android:color/black"
-                        android:id="@+id/mix_videoView_frame"
-                        android:layout_width="match_parent"
-                        android:layout_height="300dp"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/medium_margin"
-                        android:layout_marginEnd="@dimen/small_margin"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/video_file_textView">
-                        <VideoView
-                            android:id="@+id/mix_videoView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                             />
-                    </FrameLayout>
+                <ImageView
+                    android:id="@+id/load_video_fab"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/mix_video_frame_image"
+                    app:layout_constraintEnd_toEndOf="@+id/mix_video_frame_image"
+                    app:layout_constraintStart_toStartOf="@+id/mix_video_frame_image"
+                    app:layout_constraintTop_toTopOf="@+id/mix_video_frame_image" />
 
-                    <ImageButton
-                        android:id="@+id/mix_video_play_imageButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/medium_margin"
-                        android:background="@drawable/button_background_primary"
-                        android:src="@drawable/play_icon"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/mix_videoView_frame" />
+                <ImageView
+                    android:id="@+id/mix_video_play_imageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/frame" />
 
 
-                    <ImageButton
-                        android:id="@+id/mix_video_stop_imageButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/medium_margin"
-                        android:background="@drawable/button_background_primary"
-                        android:src="@drawable/stop_icon"
-                        app:layout_constraintStart_toEndOf="@+id/mix_video_play_imageButton"
-                        app:layout_constraintTop_toBottomOf="@+id/mix_videoView_frame" />
+                <ImageView
+                    android:id="@+id/mix_video_stop_imageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    app:layout_constraintStart_toEndOf="@+id/mix_video_play_imageView"
+                    app:layout_constraintTop_toBottomOf="@+id/frame" />
 
-                    <SeekBar
-                        android:id="@+id/mix_video_seekBar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginEnd="@dimen/small_margin"
-                        app:layout_constraintBottom_toBottomOf="@id/mix_video_stop_imageButton"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/mix_video_stop_imageButton"
-                        app:layout_constraintTop_toTopOf="@id/mix_video_stop_imageButton" />
+                <SeekBar
+                    android:id="@+id/mix_video_seekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    app:layout_constraintBottom_toBottomOf="@id/mix_video_stop_imageView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mix_video_stop_imageView"
+                    app:layout_constraintTop_toTopOf="@id/mix_video_stop_imageView" />
 
-                    <Button
-                        android:id="@+id/mix_video_from_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_marginStart="@dimen/super_margin"
-                        android:layout_marginEnd="@dimen/medium_margin"
-                        android:background="@color/colorAccent"
-                        android:text="@string/from"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintBottom_toBottomOf="@+id/mix_video_range_textView"
-                        app:layout_constraintEnd_toStartOf="@+id/mix_video_to_button"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/mix_video_range_textView" />
+                <Button
+                    android:id="@+id/mix_video_from_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/large_margin"
+                    android:layout_marginEnd="@dimen/medium_margin"
+                    android:background="@color/button_color"
+                    android:text="@string/from"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/medium_text_size"
+                    app:layout_constraintEnd_toStartOf="@+id/mix_video_to_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mix_video_play_imageView" />
 
-                    <Button
-                        android:id="@+id/mix_video_to_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_marginEnd="@dimen/super_margin"
-                        android:background="@color/colorAccent"
-                        android:text="@string/to"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintBottom_toBottomOf="@+id/mix_video_range_textView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/mix_video_from_button"
-                        app:layout_constraintTop_toTopOf="@+id/mix_video_range_textView" />
+                <Button
+                    android:id="@+id/mix_video_to_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/large_margin"
+                    android:background="@color/button_color"
+                    android:text="@string/to"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/medium_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/mix_video_from_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mix_video_from_button"
+                    app:layout_constraintTop_toTopOf="@+id/mix_video_from_button" />
 
-                    <TextView
-                        android:id="@+id/mix_video_range_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/medium_margin"
-                        android:layout_marginBottom="@dimen/extra_margin"
-                        android:text="@string/range"
-                        android:textColor="@color/text_color_black"
-                        android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/mix_video_play_imageButton" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            </androidx.cardview.widget.CardView>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/load_video_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/load_icon"
-                app:fabSize="mini"
-                app:layout_constraintBottom_toBottomOf="@+id/mix_video_cardView"
-                app:layout_constraintEnd_toEndOf="@+id/mix_video_cardView"
-                app:layout_constraintStart_toStartOf="@+id/mix_video_cardView"
-                app:layout_constraintTop_toBottomOf="@+id/mix_video_cardView" />
-
-            <androidx.cardview.widget.CardView
-
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/mix_audio_cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginTop="@dimen/large_margin"
                 android:layout_marginEnd="@dimen/small_margin"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/load_video_fab">
+                app:layout_constraintTop_toBottomOf="@+id/mix_video_cardView">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/audio_file_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:text="@string/audio_file"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/medium_text_size"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/audio_file_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/small_margin"
-                        android:text="@string/audio_file"
-                        android:textColor="@color/text_color_black"
-                        android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/audio_file_name_textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/small_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/audio_file_textView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias=".0"
+                    app:layout_constraintStart_toEndOf="@+id/audio_file_textView"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/audio_file_name_textView"
-                        app:layout_constraintStart_toEndOf="@+id/audio_file_textView"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintHorizontal_bias=".0"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/medium_margin"
-                        android:layout_marginTop="@dimen/small_margin"
-                        android:layout_marginEnd="@dimen/small_margin"
-                        android:textColor="@color/text_color_black"
-                        android:textSize="@dimen/small_text_size"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        app:layout_constraintBottom_toBottomOf="@+id/audio_file_textView"/>
+                <ImageView
+                    android:id="@+id/mix_audio_play_imageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/audio_file_textView" />
 
-                    <ImageButton
-                        android:id="@+id/mix_audio_play_imageButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/medium_margin"
-                        android:background="@drawable/button_background_primary"
-                        android:src="@drawable/play_icon"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/audio_file_textView" />
+                <ImageView
+                    android:id="@+id/mix_audio_stop_imageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    app:layout_constraintStart_toEndOf="@+id/mix_audio_play_imageView"
+                    app:layout_constraintTop_toBottomOf="@+id/audio_file_textView" />
 
-                    <ImageButton
-                        android:id="@+id/mix_audio_stop_imageButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/medium_margin"
-                        android:background="@drawable/button_background_primary"
-                        android:src="@drawable/stop_icon"
-                        app:layout_constraintStart_toEndOf="@+id/mix_audio_play_imageButton"
-                        app:layout_constraintTop_toBottomOf="@+id/audio_file_textView" />
-
-                    <SeekBar
-                        android:id="@+id/mix_audio_seekBar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginEnd="@dimen/small_margin"
-                        app:layout_constraintBottom_toBottomOf="@id/mix_audio_stop_imageButton"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/mix_audio_stop_imageButton"
-                        app:layout_constraintTop_toTopOf="@id/mix_audio_stop_imageButton" />
-
-                    <TextView
-                        android:id="@+id/mix_audio_range_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/medium_margin"
-                        android:layout_marginBottom="@dimen/extra_margin"
-                        android:text="@string/range"
-                        android:textColor="@color/text_color_black"
-                        android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/mix_audio_play_imageButton" />
-
-                    <Button
-                        android:id="@+id/mix_audio_from_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_marginStart="@dimen/super_margin"
-                        android:layout_marginEnd="@dimen/medium_margin"
-                        android:background="@color/colorAccent"
-                        android:text="@string/from"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintBottom_toBottomOf="@+id/mix_audio_range_textView"
-                        app:layout_constraintEnd_toStartOf="@+id/mix_audio_to_button"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/mix_audio_range_textView" />
-
-                    <Button
-                        android:id="@+id/mix_audio_to_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_marginEnd="@dimen/super_margin"
-                        android:background="@color/colorAccent"
-                        android:text="@string/to"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/medium_text_size"
-                        app:layout_constraintBottom_toBottomOf="@+id/mix_audio_range_textView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/mix_audio_from_button"
-                        app:layout_constraintTop_toTopOf="@+id/mix_audio_range_textView" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                <SeekBar
+                    android:id="@+id/mix_audio_seekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    app:layout_constraintBottom_toBottomOf="@id/mix_audio_stop_imageView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mix_audio_stop_imageView"
+                    app:layout_constraintTop_toTopOf="@id/mix_audio_stop_imageView" />
 
 
-            </androidx.cardview.widget.CardView>
+                <Button
+                    android:id="@+id/mix_audio_from_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/large_margin"
+                    android:layout_marginEnd="@dimen/medium_margin"
+                    android:background="@color/button_color"
+                    android:text="@string/from"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/medium_text_size"
+                    app:layout_constraintEnd_toStartOf="@+id/mix_audio_to_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mix_audio_play_imageView" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/load_audio_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/load_icon"
-                app:fabSize="mini"
-                app:layout_constraintBottom_toBottomOf="@+id/mix_audio_cardView"
-                app:layout_constraintEnd_toEndOf="@+id/mix_audio_cardView"
-                app:layout_constraintStart_toStartOf="@+id/mix_audio_cardView"
-                app:layout_constraintTop_toBottomOf="@+id/mix_audio_cardView" />
+                <Button
+                    android:id="@+id/mix_audio_to_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/large_margin"
+                    android:background="@color/button_color"
+                    android:text="@string/to"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/medium_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/mix_audio_from_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mix_audio_from_button"
+                    app:layout_constraintTop_toTopOf="@+id/mix_audio_from_button" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/mix_load_audio"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/large_margin"
+                app:layout_constraintBottom_toTopOf="@+id/mix_start_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mix_video_cardView" />
 
 
-            <ImageButton
+            <Button
                 android:id="@+id/mix_start_button"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/large_margin"
                 android:layout_marginBottom="@dimen/medium_margin"
-
-                android:background="@drawable/button_background_primary"
                 android:onClick="onStartClick"
                 android:scaleType="center"
                 android:src="@drawable/mix_icon"
+                android:text="@string/start_mix"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/large_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/load_audio_fab" />
+                app:layout_constraintTop_toBottomOf="@+id/mix_audio_cardView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

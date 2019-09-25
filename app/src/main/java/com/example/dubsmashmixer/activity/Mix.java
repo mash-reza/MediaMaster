@@ -3,10 +3,10 @@ package com.example.dubsmashmixer.activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.FileProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -24,18 +24,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
 import com.example.dubsmashmixer.util.Helper;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.google.android.exoplayer2.util.UriUtil;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
 
 public class Mix extends AppCompatActivity {
@@ -45,24 +43,28 @@ public class Mix extends AppCompatActivity {
     //video card
     private TextView videoFileNameTextView;
     private VideoView mixVideoView;
-    private ImageButton mixVideoPlayImageButton;
-    private ImageButton mixVideoStopImageButton;
+    private ImageView mixVideoPlayImageView;
+    private ImageView mixVideoStopImageView;
     private SeekBar mixVideoSeekBar;
-    private FloatingActionButton loadVideoFab;
+    private ImageView loadVideoFab;
     private Button mixVideoFromButton;
     private Button mixVideoToButton;
+    private ImageView mixVideoFrameImage;
+    private FrameLayout mixVideoViewFrameLayout;
+
 
     //audio card
     private TextView audioFileNameTextView;
-    private ImageButton mixAudioPlayPauseImageButton;
-    private ImageButton mixAudioStopImageButton;
+    private ImageView mixAudioPlayPauseImageView;
+    private ImageView mixAudioStopImageView;
     private Button mixAudioFromButton;
     private Button mixAudioToButton;
     private SeekBar mixAudioSeekBar;
-    private FloatingActionButton loadAudioFab;
+    private ImageView mixLoadAudioImageView;
+    private ConstraintLayout mixAudioLayout;
 
     //start button
-    private ImageButton mixStartFab;
+    private Button mixStartButton;
 
     //proggress
     private ProgressBar progressBar;
@@ -95,6 +97,7 @@ public class Mix extends AppCompatActivity {
 
     private MediaPlayer audioPlayer = null;
     private boolean isMixVideoViewLoaded = false;
+    private boolean isMixAudioLoaded = false;
 
     private Bundle bundle = new Bundle();
 
@@ -112,26 +115,52 @@ public class Mix extends AppCompatActivity {
         //init video card
         videoFileNameTextView = findViewById(R.id.video_file_name_textView);
         mixVideoView = findViewById(R.id.mix_videoView);
-        mixVideoPlayImageButton = findViewById(R.id.mix_video_play_imageButton);
-        mixVideoStopImageButton = findViewById(R.id.mix_video_stop_imageButton);
+        mixVideoPlayImageView = findViewById(R.id.mix_video_play_imageView);
+        mixVideoStopImageView = findViewById(R.id.mix_video_stop_imageView);
         mixVideoFromButton = findViewById(R.id.mix_video_from_button);
         mixVideoToButton = findViewById(R.id.mix_video_to_button);
         mixVideoSeekBar = findViewById(R.id.mix_video_seekBar);
         loadVideoFab = findViewById(R.id.load_video_fab);
+        mixVideoFrameImage = findViewById(R.id.mix_video_frame_image);
+        mixVideoViewFrameLayout = findViewById(R.id.mix_videoView_frame);
         //init audio card
         audioFileNameTextView = findViewById(R.id.audio_file_name_textView);
-        mixAudioPlayPauseImageButton = findViewById(R.id.mix_audio_play_imageButton);
-        mixAudioStopImageButton = findViewById(R.id.mix_audio_stop_imageButton);
+        mixAudioPlayPauseImageView = findViewById(R.id.mix_audio_play_imageView);
+        mixAudioStopImageView = findViewById(R.id.mix_audio_stop_imageView);
         mixAudioFromButton = findViewById(R.id.mix_audio_from_button);
         mixAudioToButton = findViewById(R.id.mix_audio_to_button);
         mixAudioSeekBar = findViewById(R.id.mix_audio_seekBar);
-        loadAudioFab = findViewById(R.id.load_audio_fab);
+        mixLoadAudioImageView = findViewById(R.id.mix_load_audio);
+        mixAudioLayout = findViewById(R.id.mix_audio_cardView);
         //init stat button
-        mixStartFab = findViewById(R.id.mix_start_button);
+        mixStartButton = findViewById(R.id.mix_start_button);
         //progress
         progressBar = findViewById(R.id.mix_progressbar);
         //layout
         layout = findViewById(R.id.mix_layout);
+
+        try {
+            Drawable buttonBackground = Drawable.createFromStream(
+                    getAssets().open("images/hazfe seda.png"), "");
+            mixStartButton.setBackground(buttonBackground);
+            Drawable mainBackground = Drawable.createFromStream(
+                    getAssets().open("images/background1.jpg"),"");
+            layout.setBackground(mainBackground);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Glide.with(this).load("file:///android_asset/images/play3.png").into(mixAudioPlayPauseImageView);
+        Glide.with(this).load("file:///android_asset/images/play3.png").into(mixVideoPlayImageView);
+        Glide.with(this).load("file:///android_asset/images/pause3.png").into(mixAudioStopImageView);
+        Glide.with(this).load("file:///android_asset/images/pause3.png").into(mixVideoStopImageView);
+        Glide.with(this).load("file:///android_asset/images/add video frame.png").into(mixVideoFrameImage);
+        Glide.with(this).load("file:///android_asset/images/add.png").into(loadVideoFab);
+        Glide.with(this).load("file:///android_asset/images/add file.png").into(mixLoadAudioImageView);
+
+        if (isMixVideoViewLoaded){
+            mixVideoViewFrameLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -189,6 +218,9 @@ public class Mix extends AppCompatActivity {
                         mixVideoView.seekTo(0);
                         handler.postDelayed(videoRunnable, 0);
                         isMixVideoViewLoaded = true;
+                        mixVideoFrameImage.setVisibility(View.GONE);
+                        loadVideoFab.setVisibility(View.GONE);
+                        mixVideoViewFrameLayout.setVisibility(View.VISIBLE);
                         videoFileNameTextView.setText(new File(Helper.getRealPathFromURI(videoUri, getApplicationContext())).getName());
                     } catch (Exception e) {
                         Log.e(TAG, "onActivityResult: " + e);
@@ -205,6 +237,10 @@ public class Mix extends AppCompatActivity {
                         audioPlayer.seekTo(0);
                         handler.postDelayed(audioRunnable, 0);
                         audioFileNameTextView.setText(new File(Helper.getRealPathFromURI(audioUri, getApplicationContext())).getName());
+                        isMixAudioLoaded = true;
+                        mixLoadAudioImageView.setVisibility(View.GONE);
+                        mixAudioLayout.setVisibility(View.VISIBLE);
+
                     } catch (IOException e) {
                         Log.e(TAG, "onActivityResult: ", e);
                     }
@@ -221,10 +257,11 @@ public class Mix extends AppCompatActivity {
             startActivityForResult(intent, Constants.VIDEO_PICK_REQUEST_CODE);
         });
 
-        mixVideoPlayImageButton.setOnClickListener(v -> {
+        mixVideoPlayImageView.setOnClickListener(v -> {
             //handler.removeCallbacks(runnable);
             if (!mixVideoView.isPlaying()) {
-                mixVideoPlayImageButton.setImageResource(R.drawable.play_icon);
+//                mixVideoPlayImageView.setImageResource(R.drawable.play_icon);
+                Glide.with(this).load("file:///android_asset/images/play3.png").into(mixVideoPlayImageView);
                 if (mixVideoView.getCurrentPosition() == 0)
                     mixVideoView.start();
                 else {
@@ -233,14 +270,15 @@ public class Mix extends AppCompatActivity {
                 }
                 handler.postDelayed(videoRunnable, 0);
             } else {
-                mixVideoPlayImageButton.setImageResource(R.drawable.pause_icon);
+//                mixVideoPlayImageView.setImageResource(R.drawable.pause_icon);
+                Glide.with(this).load("file:///android_asset/images/pause3.png").into(mixVideoPlayImageView);
                 mixVideoView.pause();
                 mixVideoSeekBar.setProgress(mixVideoView.getCurrentPosition());
                 handler.removeCallbacks(videoRunnable);
             }
         });
-        mixVideoStopImageButton.setOnClickListener(v -> {
-            mixVideoPlayImageButton.setImageResource(R.drawable.play_icon);
+        mixVideoStopImageView.setOnClickListener(v -> {
+            Glide.with(this).load("file:///android_asset/images/play3.png").into(mixVideoPlayImageView);
             mixVideoView.seekTo(0);
             mixVideoSeekBar.setProgress(0);
             mixVideoView.pause();
@@ -278,17 +316,17 @@ public class Mix extends AppCompatActivity {
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, toString);
             }
         });
-        mixVideoView.setOnCompletionListener(mp -> mixVideoPlayImageButton.setImageResource(R.drawable.play_icon));
+        mixVideoView.setOnCompletionListener(mp -> mixVideoPlayImageView.setImageResource(R.drawable.play_icon));
     }
 
     private void audioControl() {
-        loadAudioFab.setOnClickListener(v -> {
+        mixLoadAudioImageView.setOnClickListener(v -> {
             //load audio
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, Constants.AUDIO_PICK_REQUEST_CODE);
         });
 
-        mixAudioPlayPauseImageButton.setOnClickListener(v -> {
+        mixAudioPlayPauseImageView.setOnClickListener(v -> {
             //handler.removeCallbacks(runnable);
             if (audioPlayer != null)
                 if (!audioPlayer.isPlaying()) {
@@ -296,21 +334,25 @@ public class Mix extends AppCompatActivity {
                         audioPlayer.seekTo(0);
                         audioPlayer.start();
                         handler.postDelayed(audioRunnable, 0);
-                        mixAudioPlayPauseImageButton.setImageResource(R.drawable.pause_icon);
+//                        mixAudioPlayPauseImageView.setImageResource(R.drawable.pause_icon);
+                        Glide.with(this).load("file:///android_asset/images/play3.png").into(mixAudioPlayPauseImageView);
                     } else {
                         audioPlayer.start();
                         handler.postDelayed(audioRunnable, 0);
-                        mixAudioPlayPauseImageButton.setImageResource(R.drawable.pause_icon);
+//                        mixAudioPlayPauseImageView.setImageResource(R.drawable.pause_icon);
+                        Glide.with(this).load("file:///android_asset/images/pause3.png").into(mixAudioPlayPauseImageView);
+
                     }
                 } else {
                     audioPlayer.pause();
                     mixAudioSeekBar.setProgress(audioPlayer.getCurrentPosition());
                     handler.removeCallbacks(audioRunnable);
-                    mixAudioPlayPauseImageButton.setImageResource(R.drawable.play_icon);
+//                    mixAudioPlayPauseImageView.setImageResource(R.drawable.play_icon);
+                    Glide.with(this).load("file:///android_asset/images/play3.png").into(mixAudioPlayPauseImageView);
                 }
         });
 
-        mixAudioStopImageButton.setOnClickListener(v -> {
+        mixAudioStopImageView.setOnClickListener(v -> {
             if (audioPlayer != null) {
                 mixAudioSeekBar.setProgress(0);
                 //audioPlayer.pause();
@@ -320,12 +362,12 @@ public class Mix extends AppCompatActivity {
                 audioPlayer.seekTo(1);
                 //audioPlayer = null;
                 handler.removeCallbacks(audioRunnable);
-                mixAudioPlayPauseImageButton.setImageResource(R.drawable.play_icon);
+                mixAudioPlayPauseImageView.setImageResource(R.drawable.play_icon);
             }
         });
         if (audioPlayer != null)
             audioPlayer.setOnCompletionListener(mp -> {
-                mixAudioPlayPauseImageButton.setImageResource(R.drawable.play_icon);
+                mixAudioPlayPauseImageView.setImageResource(R.drawable.play_icon);
             });
 
         mixAudioSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -399,9 +441,9 @@ public class Mix extends AppCompatActivity {
             public void onStart() {
                 super.onStart();
                 progressBar.setVisibility(View.VISIBLE);
-                mixStartFab.setVisibility(View.INVISIBLE);
+                mixStartButton.setVisibility(View.INVISIBLE);
                 layout.setAlpha(.3f);
-//                mixAudioPlayPauseImageButton.setClickable(false);
+//                mixAudioPlayPauseImageView.setClickable(false);
                 disableClickable();
             }
 
@@ -416,7 +458,7 @@ public class Mix extends AppCompatActivity {
             public void onSuccess(String message) {
                 super.onSuccess(message);
                 progressBar.setVisibility(View.GONE);
-                mixStartFab.setVisibility(View.VISIBLE);
+                mixStartButton.setVisibility(View.VISIBLE);
                 layout.setAlpha(1);
                 Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), Mixed.class);
@@ -430,7 +472,7 @@ public class Mix extends AppCompatActivity {
             public void onFailure(String message) {
                 super.onFailure(message);
                 progressBar.setVisibility(View.GONE);
-                mixStartFab.setVisibility(View.VISIBLE);
+                mixStartButton.setVisibility(View.VISIBLE);
                 layout.setAlpha(1);
                 Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
 
