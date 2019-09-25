@@ -19,7 +19,13 @@
     <string name="recooding_started">ضبط صدا شروع شد.</string>
     <string name="preparing_ouput">در حال آماده سازی فایل خروجی، لطفا منتظر بمانید!</string>
     <string name="share_intent_title">به اشتراک گذاری</string>
+    <string name="main_button_video_convert_to_music">تبدیل ویدیو به آهنگ</string>
+    <string name="mix_video_and_audio">میکس ویدیو با فایل صوتی</string>
+    <string name="dub_video">ضبط صدا روی یک ویدیو</string>
 
+    <string name="suggest">معرفی به دوستان</string>
+    <string name="privacy_policy">حریم خصوصی</string>
+    <string name="rate">امتیاز به ما</string>
 
 
 </resources>

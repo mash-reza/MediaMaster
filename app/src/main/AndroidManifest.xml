@@ -27,7 +27,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activity.mic" />
+        <activity android:name=".activity.mic"/>
         <activity android:name=".activity.Mixed" />
         <activity android:name=".activity.Dub" />
         <activity android:name=".activity.Mix" />
