@@ -15,7 +15,7 @@
     <string name="mix_audio_conflict">Selected time for audio starting is larger than selected time for finishing it! please select a correct time range.</string>
     <string name="mix_both_conflict">Selected time for video and audio starting is larger than selected time for finishing them! please select a correct time range.</string>
     <string name="mix_not_choosen_conflict">Please select a video and an audio to start mixing!</string>
-    <string name="recooding_started">Recording Started</string>
+    <string name="recording_started">Recording...</string>
     <string name="preparing_ouput">Preparing the output file. please wait a moment!</string>
     <string name="share_intent_title">Share</string>
     <string name="main_button_video_convert_to_music">Convert Video To Audio</string>

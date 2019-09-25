@@ -3,19 +3,15 @@ package com.example.dubsmashmixer.activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -23,6 +19,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -38,7 +35,6 @@ import com.example.dubsmashmixer.util.Helper;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,17 +45,20 @@ public class Dub extends AppCompatActivity {
 
     //Ui
     private VideoView dubVideoView;
-    private ImageButton dubVideoPlayImageButton;
-    private ImageButton dubStopImageButton;
+    private ImageView dubVideoPlayImageView;
+    private ImageView dubStopImageView;
     private Button dubFromRangeButton;
     private Button dubToRangeButton;
-    private FloatingActionButton dubLoadVideoFab;
-    private ImageButton dubStartImageButton;
+    private ImageView dubLoadVideo;
+    private ImageView dubStartImageView;
     private SeekBar dubVideoSeekBar;
     private ProgressBar progressBar;
-    private ImageView visualiser;
     private ConstraintLayout innerLayout;
-    TextView dubVideoFileNameTextView;
+    private TextView dubVideoFileNameTextView;
+    private ImageView dubVideoFrameImage;
+    private FrameLayout dubVideoViewFrameLayout;
+    private ImageView dubDoneImageView;
+    private TextView dubRecordingStartedTextView;
 
     //record
     private MediaRecorder mediaRecorder = null;
@@ -97,28 +96,47 @@ public class Dub extends AppCompatActivity {
     //bundle fpr ffmpeg
     Bundle bundle = new Bundle();
 
+    private boolean isVideoLaoded = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dub);
         audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
         initUI();
-        Glide.with(this).load(R.drawable.audio_visual).into(visualiser);
     }
 
     private void initUI() {
         dubVideoView = findViewById(R.id.dub_videoView);
-        dubVideoPlayImageButton = findViewById(R.id.dub_video_play_imageButton);
-        dubStopImageButton = findViewById(R.id.dub_video_stop_imageButton);
-        dubFromRangeButton = findViewById(R.id.dub_from_range_button);
-        dubToRangeButton = findViewById(R.id.dub_to_range_button);
-        dubLoadVideoFab = findViewById(R.id.dub_load_video_fab);
-        dubStartImageButton = findViewById(R.id.dub_start_image_button);
+        dubVideoPlayImageView = findViewById(R.id.dub_video_play_imageView);
+        dubStopImageView = findViewById(R.id.dub_video_stop_imageView);
+        dubFromRangeButton = findViewById(R.id.dub_video_from_button);
+        dubToRangeButton = findViewById(R.id.dub_video_to_button);
+        dubLoadVideo = findViewById(R.id.dub_load_video);
+        dubStartImageView = findViewById(R.id.dub_start_image_button);
         dubVideoSeekBar = findViewById(R.id.dub_video_seekBar);
-        visualiser = findViewById(R.id.visual);
         progressBar = findViewById(R.id.dub_progressbar);
         innerLayout = findViewById(R.id.dub_inner_layout);
-        dubVideoFileNameTextView = findViewById(R.id.audio_video_file_name_textView);
+        dubVideoFileNameTextView = findViewById(R.id.dub_video_file_name_textView);
+        dubVideoFrameImage = findViewById(R.id.dub_video_frame_image);
+        dubVideoViewFrameLayout = findViewById(R.id.dub_videoView_frame);
+        dubDoneImageView = findViewById(R.id.dub_done_button);
+        dubRecordingStartedTextView = findViewById(R.id.dub_recording_started_textView);
+
+
+        try {
+            innerLayout.setBackground(Drawable.createFromStream(
+                    getAssets().open("images/background1.jpg"), ""));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Glide.with(this).load("file:///android_asset/images/record.png").into(dubStartImageView);
+        Glide.with(this).load("file:///android_asset/images/play3.png").into(dubVideoPlayImageView);
+        Glide.with(this).load("file:///android_asset/images/pause3.png").into(dubStopImageView);
+        Glide.with(this).load("file:///android_asset/images/add video frame.png").into(dubVideoFrameImage);
+        Glide.with(this).load("file:///android_asset/images/add.png").into(dubLoadVideo);
+        Glide.with(this).load("file:///android_asset/images/done.png").into(dubDoneImageView);
     }
 
     public void onStartClick(View v) {
@@ -158,8 +176,8 @@ public class Dub extends AppCompatActivity {
         dubVideoView.start();
         handler.postDelayed(runnable, 0);
         progressBar.setVisibility(View.GONE);
-        visualiser.setVisibility(View.VISIBLE);
-        Toast.makeText(this, R.string.recooding_started, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, R.string.recooding_started, Toast.LENGTH_SHORT).show();
+        dubRecordingStartedTextView.setVisibility(View.VISIBLE);
         isRecording = true;
     }
 
@@ -185,7 +203,7 @@ public class Dub extends AppCompatActivity {
                         public void onStart() {
                             super.onStart();
                             //disable clicks
-                            visualiser.setVisibility(View.GONE);
+                            dubRecordingStartedTextView.setVisibility(View.INVISIBLE);
                             progressBar.setVisibility(View.VISIBLE);
                             innerLayout.setAlpha(.3f);
                             Toast.makeText(Dub.this, R.string.preparing_ouput, Toast.LENGTH_LONG).show();
@@ -201,9 +219,13 @@ public class Dub extends AppCompatActivity {
                         //@SuppressLint("RestrictedApi")
                         public void onSuccess(String message) {
                             super.onSuccess(message);
-                            Intent intent = new Intent(getApplicationContext(), Mixed.class);
-                            intent.setData(outputUri);
-                            startActivity(intent);
+                            dubStartImageView.setVisibility(View.INVISIBLE);
+                            dubDoneImageView.setVisibility(View.VISIBLE);
+                            dubDoneImageView.setOnClickListener(v -> {
+                                Intent intent = new Intent(getApplicationContext(), Mixed.class);
+                                intent.setData(outputUri);
+                                startActivity(intent);
+                            });
                         }
 
                         @SuppressLint("RestrictedApi")
@@ -231,19 +253,36 @@ public class Dub extends AppCompatActivity {
     }
 
     private void videoControl() {
-        dubVideoPlayImageButton.setOnClickListener(v -> {
-            if (dubVideoView.isPlaying()) {
-                dubVideoPlayImageButton.setImageResource(R.drawable.play_icon);
-                dubVideoView.pause();
-                handler.removeCallbacks(runnable);
-            } else {
-                dubVideoPlayImageButton.setImageResource(R.drawable.pause_icon);
-                dubVideoView.start();
+        dubVideoPlayImageView.setOnClickListener(v -> {
+//            if (dubVideoView.isPlaying()) {
+//                Glide.with(this).load("file:///android_asset/images/play3.png").into(dubVideoPlayImageView);
+//                dubVideoView.pause();
+//                handler.removeCallbacks(runnable);
+//            } else {
+//                Glide.with(this).load("file:///android_asset/images/pause3.png").into(dubVideoPlayImageView);
+//                dubVideoView.start();
+//                handler.postDelayed(runnable, 0);
+//            }
+            if (!dubVideoView.isPlaying()) {
+//                mixVideoPlayImageView.setImageResource(R.drawable.play_icon);
+                Glide.with(this).load("file:///android_asset/images/play3.png").into(dubVideoPlayImageView);
+                if (dubVideoView.getCurrentPosition() == 0)
+                    dubVideoView.start();
+                else {
+                    dubVideoView.start();
+                    dubVideoView.seekTo(dubVideoView.getCurrentPosition());
+                }
                 handler.postDelayed(runnable, 0);
+            } else {
+//                mixVideoPlayImageView.setImageResource(R.drawable.pause_icon);
+                Glide.with(this).load("file:///android_asset/images/pause3.png").into(dubVideoPlayImageView);
+                dubVideoView.pause();
+                dubVideoSeekBar.setProgress(dubVideoView.getCurrentPosition());
+                handler.removeCallbacks(runnable);
             }
         });
-        dubStopImageButton.setOnClickListener(v -> {
-            dubVideoPlayImageButton.setImageResource(R.drawable.play_icon);
+        dubStopImageView.setOnClickListener(v -> {
+            Glide.with(this).load("file:///android_asset/images/play3.png").into(dubVideoPlayImageView);
             dubVideoView.pause();
             dubVideoView.seekTo(0);
             dubVideoSeekBar.setProgress(0);
@@ -266,9 +305,9 @@ public class Dub extends AppCompatActivity {
             }
         });
         dubVideoView.setOnCompletionListener(mp -> {
-            dubVideoPlayImageButton.setImageResource(R.drawable.play_icon);
+            Glide.with(this).load("file:///android_asset/images/play3.png").into(dubVideoPlayImageView);
         });
-        dubLoadVideoFab.setOnClickListener(v -> {
+        dubLoadVideo.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, Constants.VIDEO_PICK_REQUEST_CODE);
         });
@@ -301,7 +340,11 @@ public class Dub extends AppCompatActivity {
                 //set
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH,
                         new File(Helper.getRealPathFromURI(videoUri, getApplicationContext())).getAbsolutePath());
-                dubVideoFileNameTextView.setText(new File(Helper.getRealPathFromURI(videoUri,getApplicationContext())).getName());
+                dubVideoFileNameTextView.setText(new File(Helper.getRealPathFromURI(videoUri, getApplicationContext())).getName());
+                isVideoLaoded = true;
+                dubLoadVideo.setVisibility(View.GONE);
+                dubVideoFrameImage.setVisibility(View.GONE);
+                dubVideoViewFrameLayout.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 Log.e(TAG, "onActivityResult: " + e);
             }

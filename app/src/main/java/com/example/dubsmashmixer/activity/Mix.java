@@ -144,7 +144,7 @@ public class Mix extends AppCompatActivity {
                     getAssets().open("images/hazfe seda.png"), "");
             mixStartButton.setBackground(buttonBackground);
             Drawable mainBackground = Drawable.createFromStream(
-                    getAssets().open("images/background1.jpg"),"");
+                    getAssets().open("images/background1.jpg"), "");
             layout.setBackground(mainBackground);
         } catch (IOException e) {
             e.printStackTrace();
@@ -158,7 +158,7 @@ public class Mix extends AppCompatActivity {
         Glide.with(this).load("file:///android_asset/images/add.png").into(loadVideoFab);
         Glide.with(this).load("file:///android_asset/images/add file.png").into(mixLoadAudioImageView);
 
-        if (isMixVideoViewLoaded){
+        if (isMixVideoViewLoaded) {
             mixVideoViewFrameLayout.setVisibility(View.GONE);
         }
     }
@@ -222,6 +222,7 @@ public class Mix extends AppCompatActivity {
                         loadVideoFab.setVisibility(View.GONE);
                         mixVideoViewFrameLayout.setVisibility(View.VISIBLE);
                         videoFileNameTextView.setText(new File(Helper.getRealPathFromURI(videoUri, getApplicationContext())).getName());
+//                        mixStartButton.setVisibility(View.VISIBLE);
                     } catch (Exception e) {
                         Log.e(TAG, "onActivityResult: " + e);
                     }
@@ -316,7 +317,7 @@ public class Mix extends AppCompatActivity {
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, toString);
             }
         });
-        mixVideoView.setOnCompletionListener(mp -> mixVideoPlayImageView.setImageResource(R.drawable.play_icon));
+        mixVideoView.setOnCompletionListener(mp -> Glide.with(this).load("file:///android_asset/images/play3.png").into(mixVideoPlayImageView));
     }
 
     private void audioControl() {
