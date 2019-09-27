@@ -26,4 +26,5 @@
     <string name="rate">rate us</string>
     <string name="start_mix">Start Mix</string>
     <string name="convert">Convert</string>
+    <string name="file_deleted">File deleted</string>
 </resources>

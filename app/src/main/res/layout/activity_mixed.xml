@@ -15,24 +15,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@android:color/black"/>
-    <ImageButton
+    <ImageView
         android:onClick="onMixDeleteButtonClick"
         android:id="@+id/mixed_delete_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/delete_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="@dimen/medium_margin"
         android:layout_marginTop="@dimen/small_margin"/>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/mixed_share_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="@dimen/small_margin"
         android:layout_marginEnd="@dimen/small_margin"
-        android:background="@drawable/share_icon"
         android:onClick="onMixDubShareButtonClick"
         app:layout_constraintEnd_toStartOf="@+id/mixed_delete_button"
         app:layout_constraintTop_toTopOf="parent" />

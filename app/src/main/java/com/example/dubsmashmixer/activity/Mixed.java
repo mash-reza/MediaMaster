@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.dubsmashmixer.R;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -34,6 +36,8 @@ public class Mixed extends AppCompatActivity {
     PlayerView playerView;
     ImageButton deleteButton;
     Uri uri = Uri.EMPTY;
+    ImageView share;
+    ImageView delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,11 @@ public class Mixed extends AppCompatActivity {
         setContentView(R.layout.activity_mixed);
         playerView = findViewById(R.id.mixed_player_view);
         uri = getIntent().getData();
+
+        share = findViewById(R.id.mixed_share_button);
+        delete = findViewById(R.id.mixed_delete_button);
+        Glide.with(this).load("file:///android_asset/images/share1.png").into(share);
+        Glide.with(this).load("file:///android_asset/images/trash1.png").into(delete);
     }
 
     public void onMixDubShareButtonClick(View v) {
