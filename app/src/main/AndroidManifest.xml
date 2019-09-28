@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.Files"></activity>
+        <activity android:name=".activity.Files" android:screenOrientation="portrait"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -27,12 +27,12 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activity.mic"/>
-        <activity android:name=".activity.Mixed" />
-        <activity android:name=".activity.Dub" />
-        <activity android:name=".activity.Mix" />
-        <activity android:name=".activity.Audio" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.mic" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.Mixed" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.Dub" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.Mix" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.Audio" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

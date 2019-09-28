@@ -102,7 +102,10 @@ public class Mix extends AppCompatActivity {
     private Bundle bundle = new Bundle();
 
     // check
-    private long audioFrom, audioTo, videoFrom, videoTo = 0;
+    private long audioFrom =0;
+    private long audioTo =0;
+    private long videoFrom=0 ;
+    private long videoTo =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

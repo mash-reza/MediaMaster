@@ -94,11 +94,7 @@ public class Helper {
 //    }
 
     public static String[] audioCmdBuilder(Bundle bundle) {
-        String string = "-y#-ss#00:" +
-                bundle.getString(Constants.MIX_BUNDLE_VIDEO_START_KEY) +
-                "#-t#00:" +
-                bundle.getString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY) +
-                "#-i#"
+        String string = "-y#-i#"
                 + bundle.getString(Constants.MIX_BUNDLE_VIDEO_PATH)
                 + "#-c:a#libmp3lame#"
                 + bundle.getString(Constants.MIX_BUNDLE_OUTPUT_PATH);

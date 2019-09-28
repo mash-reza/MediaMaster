@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -245,6 +246,7 @@
 
 
                 <ImageView
+                    android:visibility="gone"
                     android:id="@+id/dub_video_stop_imageView"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
@@ -259,10 +261,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/small_margin"
                     android:layout_marginEnd="@dimen/small_margin"
-                    app:layout_constraintBottom_toBottomOf="@id/dub_video_stop_imageView"
+                    app:layout_constraintBottom_toBottomOf="@+id/dub_video_play_imageView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/dub_video_stop_imageView"
-                    app:layout_constraintTop_toTopOf="@id/dub_video_stop_imageView" />
+                    app:layout_constraintTop_toTopOf="@+id/dub_video_play_imageView" />
 
                 <Button
                     android:layout_marginTop="@dimen/small_margin"

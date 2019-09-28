@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/filesBackgroundLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.Files">
@@ -10,5 +11,33 @@
         android:id="@+id/files_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/medium_margin"/>
+        android:layout_margin="@dimen/medium_margin" />
+    <ImageView
+        android:id="@+id/files_menu_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1"
+        android:layout_marginStart="-4dp"
+        android:layout_marginEnd="-4dp" />
+
+    <ImageView
+        android:id="@+id/files_home_black"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="@dimen/small_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/files_menu_bar"
+        app:layout_constraintStart_toStartOf="@+id/files_menu_bar"
+        app:layout_constraintTop_toTopOf="@+id/files_menu_bar" />
+
+    <ImageView
+        android:id="@+id/files_album_regular"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="@dimen/small_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/files_menu_bar"
+        app:layout_constraintEnd_toEndOf="@+id/files_menu_bar"
+        app:layout_constraintTop_toTopOf="@+id/files_menu_bar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

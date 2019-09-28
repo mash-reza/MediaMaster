@@ -57,7 +57,6 @@ public class Dub extends AppCompatActivity {
     private TextView dubVideoFileNameTextView;
     private ImageView dubVideoFrameImage;
     private FrameLayout dubVideoViewFrameLayout;
-    private ImageView dubDoneImageView;
     private TextView dubRecordingStartedTextView;
 
     //record
@@ -120,7 +119,6 @@ public class Dub extends AppCompatActivity {
         dubVideoFileNameTextView = findViewById(R.id.dub_video_file_name_textView);
         dubVideoFrameImage = findViewById(R.id.dub_video_frame_image);
         dubVideoViewFrameLayout = findViewById(R.id.dub_videoView_frame);
-        dubDoneImageView = findViewById(R.id.dub_done_button);
         dubRecordingStartedTextView = findViewById(R.id.dub_recording_started_textView);
 
 
@@ -136,7 +134,6 @@ public class Dub extends AppCompatActivity {
         Glide.with(this).load("file:///android_asset/images/pause3.png").into(dubStopImageView);
         Glide.with(this).load("file:///android_asset/images/add video frame.png").into(dubVideoFrameImage);
         Glide.with(this).load("file:///android_asset/images/add.png").into(dubLoadVideo);
-        Glide.with(this).load("file:///android_asset/images/done.png").into(dubDoneImageView);
     }
 
     public void onStartClick(View v) {
@@ -145,6 +142,7 @@ public class Dub extends AppCompatActivity {
                 stopRecording();
             } else {
                 startRecording();
+                Glide.with(this).load("file:///android_asset/images/done.png").into(dubStartImageView);
             }
         } else
             Toast.makeText(this, this.getResources().getString(R.string.mix_video_conflict), Toast.LENGTH_LONG).show();
@@ -220,12 +218,9 @@ public class Dub extends AppCompatActivity {
                         public void onSuccess(String message) {
                             super.onSuccess(message);
                             dubStartImageView.setVisibility(View.INVISIBLE);
-                            dubDoneImageView.setVisibility(View.VISIBLE);
-                            dubDoneImageView.setOnClickListener(v -> {
-                                Intent intent = new Intent(getApplicationContext(), Mixed.class);
-                                intent.setData(outputUri);
-                                startActivity(intent);
-                            });
+                            Intent intent = new Intent(getApplicationContext(), Mixed.class);
+                            intent.setData(outputUri);
+                            startActivity(intent);
                         }
 
                         @SuppressLint("RestrictedApi")

@@ -40,8 +40,6 @@ public class Audio extends AppCompatActivity {
     private VideoView audioVideoView;
     private ImageView audioVideoPlayImageView;
     private ImageView audioStopImageView;
-    private Button audioFromRangeButton;
-    private Button audioToRangeButton;
     private ImageView audioLoadImageView;
     private Button audioStartImageView;
     private SeekBar audioVideoSeekBar;
@@ -80,8 +78,6 @@ public class Audio extends AppCompatActivity {
         audioVideoView = findViewById(R.id.audio_videoView);
         audioVideoPlayImageView = findViewById(R.id.audio_video_play_image_view);
         audioStopImageView = findViewById(R.id.audio_video_stop_image_view);
-        audioFromRangeButton = findViewById(R.id.audio_video_from_button);
-        audioToRangeButton = findViewById(R.id.audio_video_to_button);
         audioLoadImageView = findViewById(R.id.audio_load_video);
         audioStartImageView = findViewById(R.id.audio_start_image_view);
         audioVideoSeekBar = findViewById(R.id.audio_video_seekBar);
@@ -235,18 +231,6 @@ public class Audio extends AppCompatActivity {
         audioLoadImageView.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, Constants.VIDEO_PICK_REQUEST_CODE);
-        });
-        audioFromRangeButton.setOnClickListener(v -> {
-            from = audioVideoView.getCurrentPosition();
-            String fromString = Helper.milliSecondsToTime(from);
-            audioFromRangeButton.setText(fromString);
-            bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY, fromString);
-        });
-        audioToRangeButton.setOnClickListener(v -> {
-            to = audioVideoView.getCurrentPosition();
-            String toString = Helper.milliSecondsToTime(to);
-            audioToRangeButton.setText(toString);
-            bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, toString);
         });
     }
 
