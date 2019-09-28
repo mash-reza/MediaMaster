@@ -15,7 +15,7 @@
     <string name="mix_video_conflict">نقطه انتخاب شده برای شروع برش فیلم از نقطه انتخاب شده برای پایان آن بزرگ تر است! لطفا محدوده زمانی را به درستی انتخاب کنید.</string>
     <string name="mix_audio_conflict">نقطه انتخاب شده برای شروع برش صوت از نقطه انتخاب شده برای پایان آن بزرگ تر است! لطفا محدوده زمانی را به درستی انتخاب کنید.</string>
     <string name="mix_both_conflict">نقطه انتخاب شده برای شروع برش فیلم و صدا از نقطه انتخاب شده برای پایان آن ها بزرگ تر است! لطفا محدوده زمانی را به درستی انتخاب کنید.</string>
-    <string name="mix_not_choosen_conflict">برای شروع لطفا یک ویدیو و یک فیلم را انتخاب کنید!</string>
+    <string name="mix_not_choosen_conflict">برای شروع لطفا یک ویدیو و یک فایل صوتی را انتخاب کنید!</string>
     <string name="recording_started">ضبط صدا شروع شد.</string>
     <string name="preparing_ouput">در حال آماده سازی فایل خروجی، لطفا منتظر بمانید!</string>
     <string name="share_intent_title">به اشتراک گذاری</string>
@@ -28,6 +28,11 @@
     <string name="start_mix">شروع میکس</string>
     <string name="convert">تبدیل</string>
     <string name="file_deleted">فایل حذف شد</string>
+    <string name="video_not_set_ranged">لطفا یک بازه زمانی ویدیو را مشخص کنید!</string>
+    <string name="audio_not_set_ranged">لطفا یک بازه زمانی صدا را مشخص کنید!</string>
+    <string name="both_not_set_ranged">لطفا یک بازه زمانی ویدیو و صدا را مشخص کنید!</string>
+    <string name="dub_not_choosen_conflict">لطفا یک ویدیو انتخاب کنید!</string>
+
 
 
 

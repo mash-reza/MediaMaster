@@ -74,8 +74,8 @@ public class Dub extends AppCompatActivity {
     boolean isRecording = false;
 
     //from and to
-    long from = 0;
-    long to = 0;
+    long from = -1;
+    long to = -1;
 
     //handler for playback
     Handler handler = new Handler();
@@ -137,16 +137,20 @@ public class Dub extends AppCompatActivity {
     }
 
     public void onStartClick(View v) {
-        if (from < to) {
+        if ((from == -1) && (to == -1)) {
+            Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_LONG).show();
+        } else if (((from == 0) && (to == 0))||(from == to)) {
+            Toast.makeText(this, R.string.video_not_set_ranged, Toast.LENGTH_LONG).show();
+        } else if (from > to) {
+            Toast.makeText(this, this.getResources().getString(R.string.mix_video_conflict), Toast.LENGTH_LONG).show();
+        } else {
             if (isRecording) {
                 stopRecording();
             } else {
                 startRecording();
                 Glide.with(this).load("file:///android_asset/images/done.png").into(dubStartImageView);
             }
-        } else
-            Toast.makeText(this, this.getResources().getString(R.string.mix_video_conflict), Toast.LENGTH_LONG).show();
-
+        }
     }
 
     private void startRecording() {
@@ -160,6 +164,11 @@ public class Dub extends AppCompatActivity {
         bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH, output.getAbsolutePath());
         mediaRecorder.setOutputFile(output.getAbsolutePath());
         mediaRecorder.setMaxDuration((int) (to - from));
+        mediaRecorder.setOnInfoListener((mr, what, extra) -> {
+            if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
+                stopRecording();
+            }
+        });
         try {
             mediaRecorder.prepare();
         } catch (IOException e) {
@@ -176,6 +185,10 @@ public class Dub extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         //Toast.makeText(this, R.string.recooding_started, Toast.LENGTH_SHORT).show();
         dubRecordingStartedTextView.setVisibility(View.VISIBLE);
+        dubVideoPlayImageView.setVisibility(View.INVISIBLE);
+        dubVideoSeekBar.setVisibility(View.INVISIBLE);
+        dubFromRangeButton.setVisibility(View.INVISIBLE);
+        dubToRangeButton.setVisibility(View.INVISIBLE);
         isRecording = true;
     }
 
@@ -221,6 +234,7 @@ public class Dub extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), Mixed.class);
                             intent.setData(outputUri);
                             startActivity(intent);
+                            finish();
                         }
 
                         @SuppressLint("RestrictedApi")
@@ -295,16 +309,22 @@ public class Dub extends AppCompatActivity {
             startActivityForResult(intent, Constants.VIDEO_PICK_REQUEST_CODE);
         });
         dubFromRangeButton.setOnClickListener(v -> {
-            from = dubVideoView.getCurrentPosition();
-            String fromString = Helper.milliSecondsToTime(from);
-            dubFromRangeButton.setText(fromString);
-            bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY, fromString);
+            if(isVideoLaoded){
+                from = dubVideoView.getCurrentPosition();
+                String fromString = Helper.milliSecondsToTime(from);
+                dubFromRangeButton.setText(fromString);
+                bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY, fromString);
+            }else Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_LONG).show();
+
         });
         dubToRangeButton.setOnClickListener(v -> {
-            to = dubVideoView.getCurrentPosition();
-            String toString = Helper.milliSecondsToTime(to);
-            dubToRangeButton.setText(toString);
-            bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, toString);
+            if (isVideoLaoded){
+                to = dubVideoView.getCurrentPosition();
+                String toString = Helper.milliSecondsToTime(to);
+                dubToRangeButton.setText(toString);
+                bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, toString);
+            }else Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_LONG).show();
+
         });
     }
 
@@ -328,6 +348,8 @@ public class Dub extends AppCompatActivity {
                 dubLoadVideo.setVisibility(View.GONE);
                 dubVideoFrameImage.setVisibility(View.GONE);
                 dubVideoViewFrameLayout.setVisibility(View.VISIBLE);
+                from = 0;
+                to = 0;
             } catch (Exception e) {
                 Log.e(TAG, "onActivityResult: " + e);
             }

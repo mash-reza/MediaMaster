@@ -27,4 +27,8 @@
     <string name="start_mix">Start Mix</string>
     <string name="convert">Convert</string>
     <string name="file_deleted">File deleted</string>
+    <string name="video_not_set_ranged">Please select a range for video!</string>
+    <string name="audio_not_set_ranged">Please select a range for audio!</string>
+    <string name="both_not_set_ranged">Please select a range for video and audio!</string>
+    <string name="dub_not_choosen_conflict">Please select a video!</string>
 </resources>
