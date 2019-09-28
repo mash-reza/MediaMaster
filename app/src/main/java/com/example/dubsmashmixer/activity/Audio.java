@@ -49,8 +49,6 @@ public class Audio extends AppCompatActivity {
     private FrameLayout audioVideoViewFrameLayout;
     ImageView audioVideoFrameImage;
 
-    private long from = 0;
-    private long to = 0;
 
     private Uri videoUri = Uri.EMPTY;
     private String output;
@@ -137,50 +135,47 @@ public class Audio extends AppCompatActivity {
         outPutFolder.mkdirs();
         output = outPutFolder.getAbsolutePath() + "/out" + new Date().getTime() + ".mp3";
         bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH, output);
-        if (from < to) {
-            try {
-                FFmpeg.getInstance(this).execute(Helper.audioCmdBuilder(bundle), new FFmpegExecuteResponseHandler() {
-                    @Override
-                    public void onSuccess(String message) {
-                        Log.i(TAG, "onSuccess: " + message);
-                        audioProgressBar.setVisibility(View.GONE);
-                        audioInnerLayout.setAlpha(1);
-                        Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getApplicationContext(), Mixed.class);
-                        intent.setData(Uri.parse(output));
-                        startActivity(intent);
-                    }
+        try {
+            FFmpeg.getInstance(this).execute(Helper.audioCmdBuilder(bundle), new FFmpegExecuteResponseHandler() {
+                @Override
+                public void onSuccess(String message) {
+                    Log.i(TAG, "onSuccess: " + message);
+                    audioProgressBar.setVisibility(View.GONE);
+                    audioInnerLayout.setAlpha(1);
+                    Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), Mixed.class);
+                    intent.setData(Uri.parse(output));
+                    startActivity(intent);
+                }
 
-                    @Override
-                    public void onProgress(String message) {
-                    }
+                @Override
+                public void onProgress(String message) {
+                }
 
-                    @Override
-                    public void onFailure(String message) {
-                        Log.e(TAG, "onFailure: " + message);
-                        audioProgressBar.setVisibility(View.GONE);
-                        audioInnerLayout.setAlpha(1);
-                        Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
-                    }
+                @Override
+                public void onFailure(String message) {
+                    Log.e(TAG, "onFailure: " + message);
+                    audioProgressBar.setVisibility(View.GONE);
+                    audioInnerLayout.setAlpha(1);
+                    Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
+                }
 
-                    @Override
-                    public void onStart() {
-                        Log.i(TAG, "onStart: ");
-                        audioProgressBar.setVisibility(View.VISIBLE);
-                        audioInnerLayout.setAlpha(.3f);
-                        Toast.makeText(getApplicationContext(), R.string.preparing_ouput, Toast.LENGTH_LONG).show();
-                    }
+                @Override
+                public void onStart() {
+                    Log.i(TAG, "onStart: ");
+                    audioProgressBar.setVisibility(View.VISIBLE);
+                    audioInnerLayout.setAlpha(.3f);
+                    Toast.makeText(getApplicationContext(), R.string.preparing_ouput, Toast.LENGTH_LONG).show();
+                }
 
-                    @Override
-                    public void onFinish() {
-                        Log.i(TAG, "onFinish: ");
-                    }
-                });
-            } catch (FFmpegCommandAlreadyRunningException e) {
-                e.printStackTrace();
-            }
-        } else
-            Toast.makeText(this, this.getResources().getString(R.string.mix_video_conflict), Toast.LENGTH_LONG).show();
+                @Override
+                public void onFinish() {
+                    Log.i(TAG, "onFinish: ");
+                }
+            });
+        } catch (FFmpegCommandAlreadyRunningException e) {
+            e.printStackTrace();
+        }
 
     }
 
