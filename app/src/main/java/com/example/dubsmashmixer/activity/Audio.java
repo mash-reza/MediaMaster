@@ -53,6 +53,8 @@ public class Audio extends AppCompatActivity {
     private Uri videoUri = Uri.EMPTY;
     private String output;
 
+    private boolean isLoaded = false;
+
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
@@ -123,6 +125,7 @@ public class Audio extends AppCompatActivity {
                 audioVideoFrameImage.setVisibility(View.GONE);
                 audioLoadImageView.setVisibility(View.GONE);
                 audioVideoViewFrameLayout.setVisibility(View.VISIBLE);
+                isLoaded = true;
             } catch (Exception e) {
                 Log.e(TAG, "onActivityResult: " + e);
             }
@@ -131,61 +134,66 @@ public class Audio extends AppCompatActivity {
     }
 
     public void onAudioStartClick(View v) {
-        File outPutFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster");
-        outPutFolder.mkdirs();
-        output = outPutFolder.getAbsolutePath() + "/out" + new Date().getTime() + ".mp3";
-        bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH, output);
-        try {
-            FFmpeg.getInstance(this).execute(Helper.audioCmdBuilder(bundle), new FFmpegExecuteResponseHandler() {
-                @Override
-                public void onSuccess(String message) {
-                    Log.i(TAG, "onSuccess: " + message);
-                    audioProgressBar.setVisibility(View.GONE);
-                    audioInnerLayout.setAlpha(1);
-                    Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
-//                    audioVideoPlayImageView.setVisibility(View.INVISIBLE);
-//                    audioVideoSeekBar.setVisibility(View.INVISIBLE);
-                    Intent intent = new Intent(getApplicationContext(), Mixed.class);
-                    intent.setData(Uri.parse(output));
-                    startActivity(intent);
-                    finish();
-                }
+        if (isLoaded) {
+            File outPutFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster");
+            outPutFolder.mkdirs();
+            output = outPutFolder.getAbsolutePath() + "/out" + new Date().getTime() + ".mp3";
+            bundle.putString(Constants.MIX_BUNDLE_OUTPUT_PATH, output);
+            try {
+                FFmpeg.getInstance(this).execute(Helper.audioCmdBuilder(bundle), new FFmpegExecuteResponseHandler() {
+                    @Override
+                    public void onSuccess(String message) {
+                        Log.i(TAG, "onSuccess: " + message);
+                        audioProgressBar.setVisibility(View.GONE);
+                        audioInnerLayout.setAlpha(1);
+                        Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), Mixed.class);
+                        intent.setData(Uri.parse(output));
+                        startActivity(intent);
+                        finish();
+                    }
 
-                @Override
-                public void onProgress(String message) {
-                }
+                    @Override
+                    public void onProgress(String message) {
+                    }
 
-                @Override
-                public void onFailure(String message) {
-                    Log.e(TAG, "onFailure: " + message);
-                    audioProgressBar.setVisibility(View.GONE);
-                    audioInnerLayout.setAlpha(1);
-                    Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
-                }
+                    @Override
+                    public void onFailure(String message) {
+                        Log.e(TAG, "onFailure: " + message);
+                        audioProgressBar.setVisibility(View.GONE);
+                        audioInnerLayout.setAlpha(1);
+                        audioVideoPlayImageView.setVisibility(View.VISIBLE);
+                        audioVideoSeekBar.setVisibility(View.VISIBLE);
+                        Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
+                    }
 
-                @Override
-                public void onStart() {
-                    Log.i(TAG, "onStart: ");
-                    audioProgressBar.setVisibility(View.VISIBLE);
-                    audioInnerLayout.setAlpha(.3f);
-                    Toast.makeText(getApplicationContext(), R.string.preparing_ouput, Toast.LENGTH_LONG).show();
-                }
+                    @Override
+                    public void onStart() {
+                        Log.i(TAG, "onStart: ");
+                        audioProgressBar.setVisibility(View.VISIBLE);
+                        audioInnerLayout.setAlpha(.3f);
+                        audioVideoPlayImageView.setVisibility(View.INVISIBLE);
+                        audioVideoSeekBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getApplicationContext(), R.string.preparing_ouput, Toast.LENGTH_LONG).show();
+                    }
 
-                @Override
-                public void onFinish() {
-                    Log.i(TAG, "onFinish: ");
-                }
-            });
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            e.printStackTrace();
-        }
+                    @Override
+                    public void onFinish() {
+                        Log.i(TAG, "onFinish: ");
+                    }
+                });
+            } catch (FFmpegCommandAlreadyRunningException e) {
+                e.printStackTrace();
+            }
 
+        } else Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_SHORT).show();
     }
 
     private void videoControl() {
         audioVideoPlayImageView.setOnClickListener(v -> {
+            if (isLoaded){
             if (!audioVideoView.isPlaying()) {
-                Glide.with(this).load("file:///android_asset/images/play3.png").into(audioVideoPlayImageView);
+                Glide.with(this).load("file:///android_asset/images/pause3.png").into(audioVideoPlayImageView);
                 if (audioVideoView.getCurrentPosition() == 0)
                     audioVideoView.start();
                 else {
@@ -194,12 +202,12 @@ public class Audio extends AppCompatActivity {
                 }
                 handler.postDelayed(runnable, 0);
             } else {
-                Glide.with(this).load("file:///android_asset/images/pause3.png").into(audioVideoPlayImageView);
+                Glide.with(this).load("file:///android_asset/images/play3.png").into(audioVideoPlayImageView);
                 audioVideoView.pause();
                 audioVideoSeekBar.setProgress(audioVideoView.getCurrentPosition());
                 handler.removeCallbacks(runnable);
             }
-        });
+        }});
         audioStopImageView.setOnClickListener(v -> {
             Glide.with(this).load("file:///android_asset/images/play3.png").into(audioVideoPlayImageView);
             audioVideoView.pause();
