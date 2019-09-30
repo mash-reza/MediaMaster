@@ -33,4 +33,7 @@
     <string name="audio_not_set_ranged">Please select a range for audio!</string>
     <string name="both_not_set_ranged">Please select a range for video and audio!</string>
     <string name="dub_not_choosen_conflict">Please select a video!</string>
+    <string name="audio_back_pressed_message">Are you Sure? Current Process will be damaged!</string>
+    <string name="audio_back_pressed_message_positive">Yes</string>
+    <string name="audio_back_pressed_message_negative">No</string>
 </resources>

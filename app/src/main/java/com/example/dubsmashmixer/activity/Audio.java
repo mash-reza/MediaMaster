@@ -1,6 +1,7 @@
 package com.example.dubsmashmixer.activity;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -155,6 +156,7 @@ public class Audio extends AppCompatActivity {
 
                     @Override
                     public void onProgress(String message) {
+                        Log.d(TAG, "onProgress: "+message);
                     }
 
                     @Override
@@ -165,6 +167,8 @@ public class Audio extends AppCompatActivity {
                         audioVideoPlayImageView.setVisibility(View.VISIBLE);
                         audioVideoSeekBar.setVisibility(View.VISIBLE);
                         Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
+                        File file = new File(output);
+                        Log.d(TAG, "onFailure: corrupted file deleted"+ file.delete());
                     }
 
                     @Override
@@ -174,6 +178,7 @@ public class Audio extends AppCompatActivity {
                         audioInnerLayout.setAlpha(.3f);
                         audioVideoPlayImageView.setVisibility(View.INVISIBLE);
                         audioVideoSeekBar.setVisibility(View.INVISIBLE);
+                        audioVideoView.setVisibility(View.INVISIBLE);
                         Toast.makeText(getApplicationContext(), R.string.preparing_ouput, Toast.LENGTH_LONG).show();
                     }
 
@@ -250,5 +255,17 @@ public class Audio extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         handler.removeCallbacks(runnable);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        new AlertDialog.Builder(this).setMessage(R.string.audio_back_pressed_message)
+                .setPositiveButton(R.string.audio_back_pressed_message_positive ,(dialog1, which) -> {
+            FFmpeg.getInstance(this).killRunningProcesses();
+            finish();
+        }).setNegativeButton(R.string.audio_back_pressed_message_negative , (dialog1, which) -> {
+
+        }).create().show();
     }
 }

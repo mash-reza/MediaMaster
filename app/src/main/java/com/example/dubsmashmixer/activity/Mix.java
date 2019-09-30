@@ -497,7 +497,8 @@ public class Mix extends AppCompatActivity {
                 mixStartButton.setVisibility(View.VISIBLE);
                 layout.setAlpha(1);
                 Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
-
+                File file = new File(Helper.getRealPathFromURI(outputUri,getApplicationContext()));
+                Log.d(TAG, "onFailure: corrupted file deleted"+ file.delete());
             }
 
             @SuppressLint("ClickableViewAccessibility")

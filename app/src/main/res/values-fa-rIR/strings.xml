@@ -34,8 +34,7 @@
     <string name="audio_not_set_ranged">لطفا یک بازه زمانی صدا را مشخص کنید!</string>
     <string name="both_not_set_ranged">لطفا یک بازه زمانی ویدیو و صدا را مشخص کنید!</string>
     <string name="dub_not_choosen_conflict">لطفا یک ویدیو انتخاب کنید!</string>
-
-
-
-
+    <string name="audio_back_pressed_message">آیا اطمینان دارید؟ فرایند فعلی از بین خواهد رفت!</string>
+    <string name="audio_back_pressed_message_positive">بلی</string>
+    <string name="audio_back_pressed_message_negative">خیر</string>
 </resources>

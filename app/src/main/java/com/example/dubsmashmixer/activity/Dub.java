@@ -245,6 +245,8 @@ public class Dub extends AppCompatActivity {
                         public void onFailure(String message) {
                             Toast.makeText(getApplicationContext(), R.string.onfailure_mix, Toast.LENGTH_LONG).show();
                             Log.e(TAG, "onFailure: " + message);
+                            File file = new File(Helper.getRealPathFromURI(outputUri,getApplicationContext()));
+                            Log.d(TAG, "onFailure: corrupted file deleted"+ file.delete());
                         }
 
                         @SuppressLint("ClickableViewAccessibility")

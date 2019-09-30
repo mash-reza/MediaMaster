@@ -37,7 +37,7 @@ public class Helper {
         if (minutes < 10) {
             minuteString = "0" + minutes;
         } else {
-            minuteString = "" + minuteString;
+            minuteString = "" + minutes;
         }
 
         finalTimerString = minuteString + ":" + secondsString;
