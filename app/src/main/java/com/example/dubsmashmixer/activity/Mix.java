@@ -482,7 +482,7 @@ public class Mix extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 mixStartButton.setVisibility(View.VISIBLE);
                 layout.setAlpha(1);
-                Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onsuccess_mix), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),R.string.onsuccess_mix, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), Mixed.class);
                 intent.setData(outputUri);
                 startActivity(intent);

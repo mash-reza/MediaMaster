@@ -18,7 +18,7 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         splash = findViewById(R.id.splash);
-        Glide.with(this).load("file:///android_asset/images/background1.jpg").into(splash);
+        Glide.with(this).load("file:///android_asset/images/background.jpg").into(splash);
         new Handler().postDelayed(() -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();

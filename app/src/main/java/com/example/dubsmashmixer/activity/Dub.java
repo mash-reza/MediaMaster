@@ -101,7 +101,8 @@ public class Dub extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dub);
-        audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
+        if (audioManager == null)
+            audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
         initUI();
     }
 
@@ -139,7 +140,7 @@ public class Dub extends AppCompatActivity {
     public void onStartClick(View v) {
         if ((from == -1) && (to == -1)) {
             Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_LONG).show();
-        } else if (((from == 0) && (to == 0))||(from == to)) {
+        } else if (((from == 0) && (to == 0)) || (from == to)) {
             Toast.makeText(this, R.string.video_not_set_ranged, Toast.LENGTH_LONG).show();
         } else if (from > to) {
             Toast.makeText(this, this.getResources().getString(R.string.mix_video_conflict), Toast.LENGTH_LONG).show();
@@ -231,6 +232,7 @@ public class Dub extends AppCompatActivity {
                         public void onSuccess(String message) {
                             super.onSuccess(message);
                             dubStartImageView.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getApplicationContext(), R.string.onsuccess_mix, Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), Mixed.class);
                             intent.setData(outputUri);
                             startActivity(intent);
@@ -309,21 +311,23 @@ public class Dub extends AppCompatActivity {
             startActivityForResult(intent, Constants.VIDEO_PICK_REQUEST_CODE);
         });
         dubFromRangeButton.setOnClickListener(v -> {
-            if(isVideoLaoded){
+            if (isVideoLaoded) {
                 from = dubVideoView.getCurrentPosition();
                 String fromString = Helper.milliSecondsToTime(from);
                 dubFromRangeButton.setText(fromString);
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY, fromString);
-            }else Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_LONG).show();
 
         });
         dubToRangeButton.setOnClickListener(v -> {
-            if (isVideoLaoded){
+            if (isVideoLaoded) {
                 to = dubVideoView.getCurrentPosition();
                 String toString = Helper.milliSecondsToTime(to);
                 dubToRangeButton.setText(toString);
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, toString);
-            }else Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(this, R.string.dub_not_choosen_conflict, Toast.LENGTH_LONG).show();
 
         });
     }
@@ -372,6 +376,10 @@ public class Dub extends AppCompatActivity {
         super.onStop();
         if (output != null) {
             Log.i(TAG, "onDestroy: deleted audio internal file" + output.delete());
+        }
+        if (mediaRecorder != null) {
+            mediaRecorder.release();
+            mediaRecorder = null;
         }
     }
 }
