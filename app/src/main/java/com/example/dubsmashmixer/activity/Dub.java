@@ -1,6 +1,7 @@
 package com.example.dubsmashmixer.activity;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -96,6 +97,8 @@ public class Dub extends AppCompatActivity {
     Bundle bundle = new Bundle();
 
     private boolean isVideoLaoded = false;
+    private boolean isProgressing = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,6 +221,8 @@ public class Dub extends AppCompatActivity {
                             dubRecordingStartedTextView.setVisibility(View.INVISIBLE);
                             progressBar.setVisibility(View.VISIBLE);
                             innerLayout.setAlpha(.3f);
+                            dubVideoView.setVisibility(View.INVISIBLE);
+                            isProgressing = true;
                             Toast.makeText(Dub.this, R.string.preparing_ouput, Toast.LENGTH_LONG).show();
                         }
 
@@ -245,8 +250,8 @@ public class Dub extends AppCompatActivity {
                         public void onFailure(String message) {
                             Toast.makeText(getApplicationContext(), R.string.onfailure_mix, Toast.LENGTH_LONG).show();
                             Log.e(TAG, "onFailure: " + message);
-                            File file = new File(Helper.getRealPathFromURI(outputUri,getApplicationContext()));
-                            Log.d(TAG, "onFailure: corrupted file deleted"+ file.delete());
+                            File file = new File(Helper.getRealPathFromURI(outputUri, getApplicationContext()));
+                            Log.d(TAG, "onFailure: corrupted file deleted" + file.delete());
                         }
 
                         @SuppressLint("ClickableViewAccessibility")
@@ -255,6 +260,7 @@ public class Dub extends AppCompatActivity {
                             super.onFinish();
                             progressBar.setVisibility(View.GONE);
                             innerLayout.setAlpha(1);
+                            isProgressing = false;
                         }
                     }
             );
@@ -384,4 +390,24 @@ public class Dub extends AppCompatActivity {
             mediaRecorder = null;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isProgressing) {
+            new AlertDialog.Builder(this).setMessage(R.string.audio_back_pressed_message)
+                    .setPositiveButton(R.string.audio_back_pressed_message_positive, (dialog1, which) -> {
+                        FFmpeg.getInstance(this).killRunningProcesses();
+                        finish();
+                    }).setNegativeButton(R.string.audio_back_pressed_message_negative, (dialog1, which) -> {
+
+            }).create().show();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else super.onBackPressed();
+    }
 }
+

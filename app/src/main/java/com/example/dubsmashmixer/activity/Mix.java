@@ -1,8 +1,10 @@
 package com.example.dubsmashmixer.activity;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -22,6 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
 import com.bumptech.glide.Glide;
 import com.example.dubsmashmixer.R;
 import com.example.dubsmashmixer.util.Constants;
@@ -29,6 +32,7 @@ import com.example.dubsmashmixer.util.Helper;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -94,7 +98,8 @@ public class Mix extends AppCompatActivity {
 
     private MediaPlayer audioPlayer = null;
     private boolean isMixVideoViewLoaded = false;
-    private boolean isMixAudioLoaded = false;
+    private boolean isProgressing = false;
+    private boolean isActioPickFine = false;
 
     private Bundle bundle = new Bundle();
 
@@ -103,6 +108,8 @@ public class Mix extends AppCompatActivity {
     private long audioTo = -1;
     private long videoFrom = -1;
     private long videoTo = -1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,8 +246,7 @@ public class Mix extends AppCompatActivity {
                         audioPlayer.pause();
                         audioPlayer.seekTo(0);
                         handler.postDelayed(audioRunnable, 0);
-                        audioFileNameTextView.setText(new File(Helper.getRealPathFromURI(audioUri, getApplicationContext())).getName());
-                        isMixAudioLoaded = true;
+                        //audioFileNameTextView.setText(new File(Helper.getRealAudioPathFromURI(audioUri, getApplicationContext())).getName());
                         mixLoadAudioImageView.setVisibility(View.GONE);
                         mixAudioLayout.setVisibility(View.VISIBLE);
                         audioFrom = 0;
@@ -310,7 +316,8 @@ public class Mix extends AppCompatActivity {
                 String fromString = Helper.milliSecondsToTime(videoFrom);
                 mixVideoFromButton.setText(fromString);
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_START_KEY, fromString);
-            }else Toast.makeText(this, R.string.mix_video_not_choosen_conflict, Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(this, R.string.mix_video_not_choosen_conflict, Toast.LENGTH_SHORT).show();
         });
         mixVideoToButton.setOnClickListener(v -> {
             if (isMixVideoViewLoaded) {
@@ -318,7 +325,8 @@ public class Mix extends AppCompatActivity {
                 String toString = Helper.milliSecondsToTime(videoTo);
                 mixVideoToButton.setText(toString);
                 bundle.putString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY, toString);
-            }else Toast.makeText(this, R.string.mix_video_not_choosen_conflict, Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(this, R.string.mix_video_not_choosen_conflict, Toast.LENGTH_SHORT).show();
         });
         mixVideoView.setOnCompletionListener(mp -> Glide.with(this).load("file:///android_asset/images/play3.png").into(mixVideoPlayImageView));
     }
@@ -326,8 +334,17 @@ public class Mix extends AppCompatActivity {
     private void audioControl() {
         mixLoadAudioImageView.setOnClickListener(v -> {
             //load audio
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, Constants.AUDIO_PICK_REQUEST_CODE);
+            try {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, Constants.AUDIO_PICK_REQUEST_CODE);
+                isActioPickFine = true;
+            }catch (Exception e){
+                Toast.makeText(this, R.string.audio_pick_file_manager_toast, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                startActivityForResult(intent, Constants.AUDIO_PICK_REQUEST_CODE);
+            }
+
         });
 
         mixAudioPlayPauseImageView.setOnClickListener(v -> {
@@ -398,7 +415,8 @@ public class Mix extends AppCompatActivity {
                 String fromString = Helper.milliSecondsToTime(audioFrom);
                 mixAudioFromButton.setText(fromString);
                 bundle.putString(Constants.MIX_BUNDLE_AUDIO_START_KEY, fromString);
-            }else Toast.makeText(this, R.string.mix_audio_not_choosen_conflict, Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(this, R.string.mix_audio_not_choosen_conflict, Toast.LENGTH_SHORT).show();
         });
         mixAudioToButton.setOnClickListener(v -> {
             if (audioPlayer != null) {
@@ -406,39 +424,40 @@ public class Mix extends AppCompatActivity {
                 String toString = Helper.milliSecondsToTime(audioTo);
                 mixAudioToButton.setText(toString);
                 bundle.putString(Constants.MIX_BUNDLE_AUDIO_FINSIH_KEY, toString);
-            }else Toast.makeText(this, R.string.mix_audio_not_choosen_conflict, Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(this, R.string.mix_audio_not_choosen_conflict, Toast.LENGTH_SHORT).show();
         });
     }
 
 
     public void onStartClick(View v) {
-        if ((videoFrom == -1) && (videoTo == -1)||(audioFrom == -1) && (audioTo == -1)) {
-            if ((videoFrom == -1) && (videoTo == -1)&&(audioFrom == -1) && (audioTo == -1)){
+        if ((videoFrom == -1) && (videoTo == -1) || (audioFrom == -1) && (audioTo == -1)) {
+            if ((videoFrom == -1) && (videoTo == -1) && (audioFrom == -1) && (audioTo == -1)) {
                 Toast.makeText(this, R.string.mix_both_not_choosen_conflict, Toast.LENGTH_LONG).show();
-            }else if((videoFrom == -1) && (videoTo == -1)){
+            } else if ((videoFrom == -1) && (videoTo == -1)) {
                 Toast.makeText(this, R.string.mix_video_not_choosen_conflict, Toast.LENGTH_LONG).show();
-            }else {
+            } else {
                 Toast.makeText(this, R.string.mix_audio_not_choosen_conflict, Toast.LENGTH_LONG).show();
             }
-        } else if ((((videoFrom == 0) && (videoTo == 0))||(videoFrom == videoTo))||(((audioFrom == 0) && (audioTo == 0))||(audioFrom == audioTo))) {
-            if ((((videoFrom == 0) && (videoTo == 0))||(videoFrom == videoTo))&&(((audioFrom == 0) && (audioTo == 0))||(audioFrom == audioTo))){
+        } else if ((((videoFrom == 0) && (videoTo == 0)) || (videoFrom == videoTo)) || (((audioFrom == 0) && (audioTo == 0)) || (audioFrom == audioTo))) {
+            if ((((videoFrom == 0) && (videoTo == 0)) || (videoFrom == videoTo)) && (((audioFrom == 0) && (audioTo == 0)) || (audioFrom == audioTo))) {
                 Toast.makeText(this, R.string.both_not_set_ranged, Toast.LENGTH_LONG).show();
-            }else if(((videoFrom == 0) && (videoTo == 0))||(videoFrom == videoTo)){
+            } else if (((videoFrom == 0) && (videoTo == 0)) || (videoFrom == videoTo)) {
                 Toast.makeText(this, R.string.video_not_set_ranged, Toast.LENGTH_LONG).show();
-            }else {
+            } else {
                 Toast.makeText(this, R.string.audio_not_set_ranged, Toast.LENGTH_LONG).show();
             }
-        } else if ((videoFrom>videoTo)||(audioFrom>audioTo)) {
-            if((videoFrom>videoTo)&&(audioFrom>audioTo)){
+        } else if ((videoFrom > videoTo) || (audioFrom > audioTo)) {
+            if ((videoFrom > videoTo) && (audioFrom > audioTo)) {
                 Toast.makeText(this, R.string.mix_both_conflict, Toast.LENGTH_LONG).show();
-            }else if((videoFrom>videoTo)){
+            } else if ((videoFrom > videoTo)) {
                 Toast.makeText(this, R.string.mix_video_conflict, Toast.LENGTH_LONG).show();
-            }else {
+            } else {
                 Toast.makeText(this, R.string.mix_audio_conflict, Toast.LENGTH_LONG).show();
             }
         } else {
             File videoFile = new File(Helper.getRealPathFromURI(videoUri, getApplicationContext()));
-            File audioFile = new File(Helper.getRealPathFromURI(audioUri, getApplicationContext()));
+            File audioFile = new File(Helper.getRealAudioPathFromURI(audioUri, getApplicationContext()));
             bundle.putString(Constants.MIX_BUNDLE_VIDEO_PATH, videoFile.getAbsolutePath());
             bundle.putString(Constants.MIX_BUNDLE_AUDIO_PATH, audioFile.getAbsolutePath());
             File outPutFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster");
@@ -466,7 +485,9 @@ public class Mix extends AppCompatActivity {
                 mixStartButton.setVisibility(View.INVISIBLE);
                 layout.setAlpha(.3f);
 //                mixAudioPlayPauseImageView.setClickable(false);
+                mixVideoView.setVisibility(View.INVISIBLE);
                 disableClickable();
+                isProgressing = true;
             }
 
             @Override
@@ -482,7 +503,7 @@ public class Mix extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 mixStartButton.setVisibility(View.VISIBLE);
                 layout.setAlpha(1);
-                Toast.makeText(getApplicationContext(),R.string.onsuccess_mix, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.onsuccess_mix, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), Mixed.class);
                 intent.setData(outputUri);
                 startActivity(intent);
@@ -497,14 +518,15 @@ public class Mix extends AppCompatActivity {
                 mixStartButton.setVisibility(View.VISIBLE);
                 layout.setAlpha(1);
                 Toast.makeText(getApplicationContext(), getApplicationContext().getResources().getString(R.string.onfailure_mix), Toast.LENGTH_LONG).show();
-                File file = new File(Helper.getRealPathFromURI(outputUri,getApplicationContext()));
-                Log.d(TAG, "onFailure: corrupted file deleted"+ file.delete());
+                //File file = new File(Helper.getRealPathFromURI(outputUri, getApplicationContext()));
+                //Log.d(TAG, "onFailure: corrupted file deleted" + file.delete());
             }
 
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public void onFinish() {
                 super.onFinish();
+                isProgressing = false;
             }
         };
     }
@@ -512,4 +534,19 @@ public class Mix extends AppCompatActivity {
     private void disableClickable() {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isProgressing) {
+            new AlertDialog.Builder(this).setMessage(R.string.audio_back_pressed_message)
+                    .setPositiveButton(R.string.audio_back_pressed_message_positive, (dialog1, which) -> {
+                        FFmpeg.getInstance(this).killRunningProcesses();
+                        finish();
+                    }).setNegativeButton(R.string.audio_back_pressed_message_negative, (dialog1, which) -> {
+
+            }).create().show();
+        } else super.onBackPressed();
+    }
 }
+

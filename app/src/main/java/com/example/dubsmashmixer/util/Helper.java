@@ -4,10 +4,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class Helper {
+    private static final String TAG = "Helper";
+
     public static String getRealPathFromURI(Uri contentURI, Context context) {
         String result;
         Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
@@ -20,6 +28,39 @@ public class Helper {
             cursor.close();
         }
         return result;
+    }
+
+    public static String getRealAudioPathFromURI(Uri contentURI, Context context) {
+        InputStream in = null;
+        OutputStream out = null;
+        File outPutFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MediaMaster");
+        outPutFolder.mkdirs();
+        String outPutFilePath = outPutFolder.getAbsolutePath() + "audioTempFile.mp3";
+        try {
+            in = context.getContentResolver().openInputStream(contentURI);
+
+            out = new FileOutputStream(new File(outPutFilePath));
+            byte[] array = new byte[1024];
+            int length;
+            while ((length = in.read(array)) > 0) {
+                out.write(array, 0, length);
+            }
+
+        } catch (IOException e) {
+            Log.e(TAG, "getRealPathFromURI1: " + e.getMessage());
+        } finally {
+            try {
+                if (in != null)
+                    in.close();
+                if (out != null) {
+                    out.flush();
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return outPutFilePath;
     }
 
     public static String milliSecondsToTime(long milliseconds) {
@@ -79,19 +120,7 @@ public class Helper {
         String[] array = string.split("#");
         return array;
     }
-//
-//    public static String[] audioCmdBuilder(Bundle bundle) {
-//        String string = "-y#-ss#00:" +
-//                bundle.getString(Constants.MIX_BUNDLE_VIDEO_START_KEY) +
-//                "#-t#00:" +
-//                bundle.getString(Constants.MIX_BUNDLE_VIDEO_FINISH_KEY) +
-//                "#-i#"
-//                + bundle.getString(Constants.MIX_BUNDLE_VIDEO_PATH)
-//                + "#-vn#-c:a#libmp3lame#"
-//                + bundle.getString(Constants.MIX_BUNDLE_OUTPUT_PATH);
-//        String[] array = string.split("#");
-//        return array;
-//    }
+
 
     public static String[] audioCmdBuilder(Bundle bundle) {
         String string = "-y#-i#"
@@ -101,6 +130,5 @@ public class Helper {
         String[] array = string.split("#");
         return array;
     }
-
 
 }

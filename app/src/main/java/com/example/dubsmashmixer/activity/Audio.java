@@ -55,6 +55,7 @@ public class Audio extends AppCompatActivity {
     private String output;
 
     private boolean isLoaded = false;
+    private boolean isProgressing = false;
 
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
@@ -67,6 +68,7 @@ public class Audio extends AppCompatActivity {
     };
 
     private Bundle bundle = new Bundle();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,12 +181,14 @@ public class Audio extends AppCompatActivity {
                         audioVideoPlayImageView.setVisibility(View.INVISIBLE);
                         audioVideoSeekBar.setVisibility(View.INVISIBLE);
                         audioVideoView.setVisibility(View.INVISIBLE);
+                        isProgressing = true;
                         Toast.makeText(getApplicationContext(), R.string.preparing_ouput, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFinish() {
                         Log.i(TAG, "onFinish: ");
+                        isProgressing = false;
                     }
                 });
             } catch (FFmpegCommandAlreadyRunningException e) {
@@ -260,12 +264,14 @@ public class Audio extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
+        if(isProgressing){
         new AlertDialog.Builder(this).setMessage(R.string.audio_back_pressed_message)
                 .setPositiveButton(R.string.audio_back_pressed_message_positive ,(dialog1, which) -> {
             FFmpeg.getInstance(this).killRunningProcesses();
             finish();
         }).setNegativeButton(R.string.audio_back_pressed_message_negative , (dialog1, which) -> {
 
-        }).create().show();
+        }).create().show();}
+        else super.onBackPressed();
     }
 }

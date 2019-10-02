@@ -37,4 +37,5 @@
     <string name="audio_back_pressed_message">آیا اطمینان دارید؟ فرایند فعلی از بین خواهد رفت!</string>
     <string name="audio_back_pressed_message_positive">بلی</string>
     <string name="audio_back_pressed_message_negative">خیر</string>
+    <string name="audio_pick_file_manager_toast">لطفا یک فایل صوتی انتخاب کنید.</string>
 </resources>
